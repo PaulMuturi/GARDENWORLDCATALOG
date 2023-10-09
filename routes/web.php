@@ -13,6 +13,5 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'App\Http\Controllers\admin\AdminPagesController@dashboard')->name('dashboard');
+Route::get('/addplant', 'App\Http\Controllers\admin\PlantController@create')->name('addPlant');

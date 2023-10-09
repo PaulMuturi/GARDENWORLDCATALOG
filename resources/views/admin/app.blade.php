@@ -1,6 +1,6 @@
-@include('layouts.head')
+@include('admin.layouts.head')
 
 @section('main-content')
 @show
 
-@include('layouts.footer')
+@include('admin.layouts.footer')
