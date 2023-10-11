@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\admin\DataController;
 use Illuminate\Http\Request;
 
 class PlantController extends Controller
@@ -24,7 +25,10 @@ class PlantController extends Controller
      */
     public function create()
     {
-        return view('admin.pages.addplant');
+
+        $data = new DataController();
+        $plant_fp = $data->getPlantFootprint();
+        return view('admin.pages.addplant', compact('plant_fp'));
     }
 
     /**
