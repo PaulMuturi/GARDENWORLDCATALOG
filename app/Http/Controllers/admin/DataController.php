@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 class DataController extends Controller
 {
-    public function getPlantFootprint(){
+    public function getProductFootprint(){
         $data = [
             'light_requirements' => [
                 [

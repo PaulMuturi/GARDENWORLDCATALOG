@@ -14,4 +14,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', 'App\Http\Controllers\admin\AdminPagesController@dashboard')->name('dashboard');
-Route::get('/addplant', 'App\Http\Controllers\admin\PlantController@create')->name('addPlant');
+Route::get('/addproduct', 'App\Http\Controllers\admin\ProductController@create')->name('addProduct');
+Route::post('/saveproduct', 'App\Http\Controllers\admin\ProductController@store')->name('saveProduct');
+Route::get('editProduct/{id}', 'App\Http\Controllers\admin\ProductController@edit')->name('editProduct');
+
