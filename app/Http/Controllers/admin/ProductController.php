@@ -47,11 +47,13 @@ class ProductController extends Controller
         $bot_name_exists = Product::where('botanical_name', $request->botanical_name)->first();
         $com_name_exists = Product::where('common_name', $request->common_name)->first();
         $product;
+        $bot_strlen = strlen(ltrim($request->botanical_name));
+        $com_strlen = strlen(ltrim($request->common_name));
 
-        if ($bot_name_exists){
+        if ($bot_strlen > 0 && $bot_name_exists){
             $product =  $bot_name_exists;
         }
-        elseif ($com_name_exists){
+        elseif ($com_strlen > 0 && $com_name_exists && $bot_strlen == 0){
             $product =  $com_name_exists;
         }
         else{
@@ -83,7 +85,8 @@ class ProductController extends Controller
         $product->toxicity_to_pets = $request->toxicity_to_pets;
         
         $product->save();
-        $saved_product = Product::latest()->first();
+        // $saved_product = Product::latest()->first();
+        $saved_product = $product;
         //Delete any images that were removed
         $db_existing_imgs = ProductImage::where('product_id', $saved_product->id)->get();
     
