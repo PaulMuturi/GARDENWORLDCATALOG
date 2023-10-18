@@ -46,7 +46,7 @@
                         <div class="row">
                             @foreach($product->product_image as $img)
                             @php $img = $img->image @endphp
-                            <div class="col-6 d-flex flex-column border p-2" id="{{$img}}">
+                            <div class="col-4 d-flex flex-column border p-2" id="{{$img}}">
                                 <span class="btn btn-dark py-0 ms-auto" style="font-size:smaller" onclick="removeImage('{{$img}}')">x</span>
                                 <img src="{{asset('products/'.$img)}}" alt="" class="col-12">
                                 <input hidden type="text" name="existing_image[]" value="{{$img}}" >
