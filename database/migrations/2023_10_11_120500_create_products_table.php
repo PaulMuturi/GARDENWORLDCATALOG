@@ -21,8 +21,9 @@ return new class extends Migration
             $table->string('category')->nullable();
             $table->float('selling_price')->nullable();
             $table->float('max_discounted_price')->nullable();
-            $table->float('stocked_amount')->nullable();
-            $table->string('stocked_amount_units')->nullable();
+            $table->float('boq_price')->nullable();
+            $table->float('stocked_qty')->nullable();
+            $table->string('stocked_qty_units')->nullable();
             $table->text('notes')->nullable();
             $table->string('publish')->nullable();
             $table->string('foliage_color')->nullable();

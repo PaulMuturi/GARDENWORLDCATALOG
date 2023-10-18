@@ -20,6 +20,10 @@ class DataController extends Controller
                     'db_name' => 'full_shade'
                 ],
                 [
+                    'display_name' => 'Partial Shade',
+                    'db_name' => 'partial_shade'
+                ],
+                [
                     'display_name' => 'Bright indirect sun',
                     'db_name' => 'bright_indirect_sun'
                 ],
@@ -29,7 +33,7 @@ class DataController extends Controller
                 ],
                 [
                     'display_name' => 'Full sun',
-                    'db_name' => 'full sun'
+                    'db_name' => 'full_sun'
                 ],
             ],
 

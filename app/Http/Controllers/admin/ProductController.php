@@ -6,7 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\admin\DataController;
 use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Models\ProductImage;
 use App\Models\LightRequirement;
+use Illuminate\Support\Facades\Storage;
+
 
 class ProductController extends Controller
 {
@@ -17,7 +20,8 @@ class ProductController extends Controller
      */
     public function index()
     {
-        //
+        $products = Product::with('light_requirement')->with('product_image')->get();
+        return view('admin.pages.products', compact('products'));
     }
 
     /**
@@ -27,7 +31,6 @@ class ProductController extends Controller
      */
     public function create()
     {
-
         $data = new DataController();
         $product_fp = $data->getProductFootprint();
         return view('admin.pages.addproduct', compact('product_fp'));
@@ -41,15 +44,29 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        $product = new Product();
+        $bot_name_exists = Product::where('botanical_name', $request->botanical_name)->first();
+        $com_name_exists = Product::where('common_name', $request->common_name)->first();
+        $product;
+
+        if ($bot_name_exists){
+            $product =  $bot_name_exists;
+        }
+        elseif ($com_name_exists){
+            $product =  $com_name_exists;
+        }
+        else{
+            $product = new Product();
+        }
 
         $product->botanical_name = $request->botanical_name;
         $product->common_name = $request->common_name;
         $product->category = $request->category;
         $product->selling_price = $request->selling_price;
         $product->max_discounted_price = $request->max_discounted_price;
-        $product->stocked_amount = $request->stocked_amount;
-        $product->stocked_amount_units = $request->stocked_amount_units;
+        $product->selling_price = $request->selling_price;
+        $product->boq_price = $request->boq_price;
+        $product->stocked_qty = $request->stocked_qty;
+        $product->stocked_qty_units = $request->stocked_qty_units;
         $product->notes = $request->notes;
         $product->publish = $request->publish;
         $product->foliage_color = $request->foliage_color;
@@ -64,23 +81,68 @@ class ProductController extends Controller
         $product->water_requirements = $request->water_requirements;
         $product->toxicity_to_humans = $request->toxicity_to_humans;
         $product->toxicity_to_pets = $request->toxicity_to_pets;
-        //TO DO
-        //Save image
-        $product->save();
-
-        $saved_product = Product::latest()->first();
-
-        //Remove all entries for the plant inorder to save again
-        LightRequirement::where('plant_id', $saved_product->id)->delete();
         
-        foreach($request->light_requirements as $requirement){
-            $light_req = new LightRequirement();
-            $light_req->plant_id = $saved_product->id;
-            $light_req->requirement = $requirement;
-            $light_req->save();
+        $product->save();
+        $saved_product = Product::latest()->first();
+        //Delete any images that were removed
+        $db_existing_imgs = ProductImage::where('product_id', $saved_product->id)->get();
+    
+        if (isset($request->existing_image)){
+            //check for the extra image in database and delete it
+            
+            if ($db_existing_imgs){
+                foreach($db_existing_imgs as $db_img){
+                    if (!in_array($db_img->image, $request->existing_image)){
+                        //delete it
+                        $imagePath = public_path('products/'.$db_img->image);
+                        if (unlink($imagePath)) { 
+                            ProductImage::where('image', $db_img->image)->where('product_id', $saved_product->id)->delete();
+                        } 
+                    }
+                }
+            }
+        }
+        else if($db_existing_imgs && !isset($request->existing_image)){
+            foreach($db_existing_imgs as $db_img){
+                //delete it
+                $imagePath = public_path('products/'.$db_img->image);
+                if (unlink($imagePath)) { 
+                    ProductImage::where('image', $db_img->image)->where('product_id', $saved_product->id)->delete();
+                } 
+            }
+        }
+        
+        //Save image
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = $image->getClientOriginalName();
+            $image->move(public_path('products'), $imageName);
+
+            $product_image = ProductImage::where('image', $imageName)->where('product_id', $saved_product->id)->first();
+
+            //Ensure you don't save same image multiple times for a product
+            if (!$product_image){
+                $product_image = new ProductImage();
+                $product_image->product_id = $saved_product->id;
+                $product_image->image = $imageName;   
+                $product_image->save();
+            }
+
         }
 
-        return redirect(route('editProduct', $saved_product->id));
+        //Remove all entries for the plant inorder to save again
+        LightRequirement::where('product_id', $saved_product->id)->delete();
+        
+        if (isset($request->light_requirements)){
+            foreach($request->light_requirements as $requirement){
+                $light_req = new LightRequirement();
+                $light_req->product_id = $saved_product->id;
+                $light_req->requirement = $requirement;
+                $light_req->save();
+            }
+        }
+
+        return redirect(route('products'));
     }
 
     /**
@@ -105,10 +167,9 @@ class ProductController extends Controller
         $data = new DataController();
         $product_fp = $data->getProductFootprint();
 
-        $product = Product::where('id', $id)->first();
-        $light_req = LightRequirement::where('plant_id', $id);
+        $product = Product::where('id', $id)->with('light_requirement')->with('product_image')->first();
 
-        return view('admin.pages.addproduct', compact('product_fp', 'product', 'light_req'));
+        return view('admin.pages.addproduct', compact('product_fp', 'product'));
     }
 
     /**
@@ -129,8 +190,26 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        //
+        $product = Product::where('id', $request->delete_product_id)->first();
+    
+        if ($product){
+            LightRequirement::where('product_id', $request->delete_product_id)->delete();
+            $product->delete();
+
+            //Delete associated images
+            $db_existing_imgs = ProductImage::where('product_id', $request->delete_product_id)->get();
+
+            foreach($db_existing_imgs as $db_img){
+                //delete it
+                $imagePath = public_path('products/'.$db_img->image);
+                if (unlink($imagePath)) { 
+                    ProductImage::where('image', $db_img->image)->where('product_id', $request->delete_product_id)->delete();
+                } 
+            }
+        }
+
+        return redirect(route('products'));
     }
 }
