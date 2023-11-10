@@ -57,6 +57,45 @@ class DataController extends Controller
                 ],
             ],
 
+            'general_color' => [
+                [
+                    'display_name' => 'White',
+                    'db_name' => 'white'
+                ],
+                [
+                    'display_name' => 'Black',
+                    'db_name' => 'black'
+                ],
+                [
+                    'display_name' => 'Green',
+                    'db_name' => 'green'
+                ],
+                [
+                    'display_name' => 'Yellow',
+                    'db_name' => 'yellow'
+                ],
+                [
+                    'display_name' => 'Orange',
+                    'db_name' => 'orange'
+                ],
+                [
+                    'display_name' => 'Red',
+                    'db_name' => 'red'
+                ],
+                [
+                    'display_name' => 'Blue',
+                    'db_name' => 'blue'
+                ],
+                [
+                    'display_name' => 'Purple',
+                    'db_name' => 'purple'
+                ],
+                [
+                    'display_name' => 'Pink',
+                    'db_name' => 'pink'
+                ],
+            ],
+
             'flower_color' => [
                 [
                     'display_name' => 'White',
@@ -85,6 +124,10 @@ class DataController extends Controller
                 [
                     'display_name' => 'Pink',
                     'db_name' => 'pink'
+                ],
+                [
+                    'display_name' => 'Apricot',
+                    'db_name' => 'apricot'
                 ],
             ],
 
@@ -125,12 +168,16 @@ class DataController extends Controller
                     'display_name' => 'Pink',
                     'db_name' => 'pink'
                 ],
+                [
+                    'display_name' => 'Grey',
+                    'db_name' => 'grey'
+                ],
             ],
 
             'category' => [
                 [
-                    'display_name' => 'Lawn',
-                    'db_name' => 'lawn'
+                    'display_name' => 'Grass',
+                    'db_name' => 'grass'
                 ],
                 [
                     'display_name' => 'Groundcover',
@@ -145,12 +192,8 @@ class DataController extends Controller
                     'db_name' => 'tall_shrub'
                 ],
                 [
-                    'display_name' => 'Herb',
-                    'db_name' => 'herb'
-                ],
-                [
-                    'display_name' => 'Climber',
-                    'db_name' => 'climber'
+                    'display_name' => 'Palm',
+                    'db_name' => 'palm'
                 ],
                 [
                     'display_name' => 'Tree',
@@ -159,6 +202,18 @@ class DataController extends Controller
                 [
                     'display_name' => 'Fruit tree',
                     'db_name' => 'fruit_tree'
+                ],
+                [
+                    'display_name' => 'Herb',
+                    'db_name' => 'herb'
+                ],
+                [
+                    'display_name' => 'Climber',
+                    'db_name' => 'climber'
+                ],
+                [
+                    'display_name' => 'Succulent',
+                    'db_name' => 'succulent'
                 ],
                 [
                     'display_name' => 'Other',
@@ -191,8 +246,12 @@ class DataController extends Controller
                     'db_name' => 'mild'
                 ],
                 [
-                    'display_name' => 'Lethal',
-                    'db_name' => 'lethal'
+                    'display_name' => 'Abit Lethal',
+                    'db_name' => 'abit_lethal'
+                ],
+                [
+                    'display_name' => 'Very Lethal',
+                    'db_name' => 'very_lethal'
                 ],
             ],
         ];

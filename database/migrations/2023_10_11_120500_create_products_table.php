@@ -26,8 +26,8 @@ return new class extends Migration
             $table->string('stocked_qty_units')->nullable();
             $table->text('notes')->nullable();
             $table->string('publish')->nullable();
-            $table->string('foliage_color')->nullable();
-            $table->string('flower_color')->nullable();
+            // $table->string('foliage_color')->nullable();
+            // $table->string('flower_color')->nullable();
             $table->string('maintenance')->nullable();
             $table->float('planting_interval')->nullable();
             $table->string('planting_interval_units')->nullable();

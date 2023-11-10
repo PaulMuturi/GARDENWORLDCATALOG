@@ -8,6 +8,10 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\LightRequirement;
+use App\Models\FoliageColor;
+use App\Models\FlowerColor;
+use App\Models\GeneralColor;
+
 use Illuminate\Support\Facades\Storage;
 
 
@@ -20,7 +24,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::with('light_requirement')->with('product_image')->get();
+        $products = Product::with('light_requirement')->with('foliage_color')->with('flower_color')->with('general_color')->with('product_image')->get();
         return view('admin.pages.products', compact('products'));
     }
 
@@ -71,8 +75,8 @@ class ProductController extends Controller
         $product->stocked_qty_units = $request->stocked_qty_units;
         $product->notes = $request->notes;
         $product->publish = $request->publish;
-        $product->foliage_color = $request->foliage_color;
-        $product->flower_color = $request->flower_color;
+        // $product->foliage_color = $request->foliage_color;
+        // $product->flower_color = $request->flower_color;
         $product->maintenance = $request->maintenance;
         $product->planting_interval = $request->planting_interval;
         $product->planting_interval_units = $request->planting_interval_units;
@@ -127,12 +131,14 @@ class ProductController extends Controller
             if (!$product_image){
                 $product_image = new ProductImage();
                 $product_image->product_id = $saved_product->id;
+                $product_image->caption = $request->caption;
                 $product_image->image = $imageName;   
                 $product_image->save();
             }
 
         }
 
+        //SAVE LIGHT REQUIREMENTS
         //Remove all entries for the plant inorder to save again
         LightRequirement::where('product_id', $saved_product->id)->delete();
         
@@ -142,6 +148,45 @@ class ProductController extends Controller
                 $light_req->product_id = $saved_product->id;
                 $light_req->requirement = $requirement;
                 $light_req->save();
+            }
+        }
+
+        //SAVE FOLIAGE COLOR REQUIREMENTS
+        //Remove all entries for the plant inorder to save again
+        FoliageColor::where('product_id', $saved_product->id)->delete();
+        
+        if (isset($request->foliage_color)){
+            foreach($request->foliage_color as $color){
+                $col = new FoliageColor();
+                $col->product_id = $saved_product->id;
+                $col->color = $color;
+                $col->save();
+            }
+        }
+
+        //SAVE FLOWER COLOR REQUIREMENTS
+        //Remove all entries for the plant inorder to save again
+        FlowerColor::where('product_id', $saved_product->id)->delete();
+        
+        if (isset($request->flower_color)){
+            foreach($request->flower_color as $color){
+                $col = new FlowerColor();
+                $col->product_id = $saved_product->id;
+                $col->color = $color;
+                $col->save();
+            }
+        }
+
+        //SAVE FLOWER COLOR REQUIREMENTS
+        //Remove all entries for the plant inorder to save again
+        GeneralColor::where('product_id', $saved_product->id)->delete();
+        
+        if (isset($request->general_color)){
+            foreach($request->general_color as $color){
+                $col = new GeneralColor();
+                $col->product_id = $saved_product->id;
+                $col->color = $color;
+                $col->save();
             }
         }
 
@@ -170,7 +215,7 @@ class ProductController extends Controller
         $data = new DataController();
         $product_fp = $data->getProductFootprint();
 
-        $product = Product::where('id', $id)->with('light_requirement')->with('product_image')->first();
+        $product = Product::where('id', $id)->with('light_requirement')->with('foliage_color')->with('flower_color')->with('general_color')->with('product_image')->first();
 
         return view('admin.pages.addproduct', compact('product_fp', 'product'));
     }
@@ -199,6 +244,8 @@ class ProductController extends Controller
     
         if ($product){
             LightRequirement::where('product_id', $request->delete_product_id)->delete();
+            FoliageColor::where('product_id', $request->delete_product_id)->delete();
+            GeneralColor::where('product_id', $request->delete_product_id)->delete();
             $product->delete();
 
             //Delete associated images

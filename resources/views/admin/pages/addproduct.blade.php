@@ -39,22 +39,24 @@
             </div>
 
             <!-- Field -->
-            <div class="col-md-6 field_item" title="Image upload currently unavailable">
-                <div class="">
+            <div class="col-md-6 field_item border rounded p-2" title="Upload new image">
+                <div class="p-2">
                     <label for="" class="field_title">*Image</label>
                     @if(isset($product))
-                        <div class="row">
+                        <div class="row mb-2">
                             @foreach($product->product_image as $img)
-                            @php $img = $img->image @endphp
-                            <div class="col-4 d-flex flex-column border p-2" id="{{$img}}">
+                            @php  $caption = $img->caption; $img = $img->image; @endphp
+                            <div class="col-4 d-flex flex-column shadow-sm border p-2" id="{{$img}}">
                                 <span class="btn btn-dark py-0 ms-auto" style="font-size:smaller" onclick="removeImage('{{$img}}')">x</span>
                                 <img src="{{asset('products/'.$img)}}" alt="" class="col-12">
+                                <span class="text-muted"><i>{{$caption}}</i></span>
                                 <input hidden type="text" name="existing_image[]" value="{{$img}}" >
                             </div>
                             @endforeach
                         </div>
                     @endif
                     <input type="file" name="image" class="form-control">
+                    <div class="p-3"> <label class="field_title">*Caption </label> <input type="text" name="caption" class="rounded col-8" style="border:solid 0.5px #D3D3D3; "></div>
                 </div>
             </div>
 
@@ -115,11 +117,42 @@
             <div class="col-md-6 field_item">
                 <input type="submit" value="SAVE" class="btn btn-warning">
             </div>
+
+            <!-- Field -->
+            <div class="col-md-6 field_item">
+                <div class="">
+                    <label for="" class="field_title">General Color (if not a plant)</label>
+                    <div class="d-flex">
+                        @foreach($product_fp->general_color as $color)
+
+                            @php
+                                $checked = "";
+                            @endphp
+
+                            @if(isset($product))
+                            
+                                @php
+                                    foreach($product->general_color as $db_color){
+                                        if ($db_color->color == $color->db_name){
+                                            $checked = "checked";  
+                                        }
+                                    }
+                                @endphp
+                            @endif
+
+                           
+                            <label class="border p-2"><span>{{$color->display_name}}</span> 
+                                <input type="checkbox" value="{{$color->db_name}}" name="general_color[]" class="no_border_rounded" @if ($checked == "checked") checked @endif >
+                            </label>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
             
             <hr class="mt-3 text-success">
             <h4 class="text-success">WHERE APPLICABLE</h4>
             <!-- Field -->
-            <div class="col-md-6 field_item">
+            <!-- <div class="col-md-6 field_item">
                 <div class="">
                     <label for="" class="field_title">Foliage color</label>
                     <select name="foliage_color" id="foliage_color" class="form-control">
@@ -129,10 +162,72 @@
                         @endforeach
                     </select>
                 </div>
+            </div> -->
+
+            <!-- Field -->
+            <div class="col-md-6 field_item">
+                <div class="">
+                    <label for="" class="field_title">Foliage color</label>
+                    <div class="d-flex">
+                        @foreach($product_fp->foliage_color as $color)
+
+                            @php
+                                $checked = "";
+                            @endphp
+
+                            @if(isset($product))
+                            
+                                @php
+                                    foreach($product->foliage_color as $db_color){
+                                        if ($db_color->color == $color->db_name){
+                                            $checked = "checked";  
+                                        }
+                                    }
+                                @endphp
+                            @endif
+
+                           
+                            <label class="border p-2"><span>{{$color->display_name}}</span> 
+                                <input type="checkbox" value="{{$color->db_name}}" name="foliage_color[]" class="no_border_rounded" @if ($checked == "checked") checked @endif >
+                            </label>
+                        @endforeach
+                    </div>
+                </div>
             </div>
 
             <!-- Field -->
             <div class="col-md-6 field_item">
+                <div class="">
+                    <label for="" class="field_title">Flower color</label>
+                    <div class="d-flex">
+                        @foreach($product_fp->flower_color as $color)
+
+                            @php
+                                $checked = "";
+                            @endphp
+
+                            @if(isset($product))
+                            
+                                @php
+                                    foreach($product->flower_color as $db_color){
+                                        if ($db_color->color == $color->db_name){
+                                            $checked = "checked";  
+                                        }
+                                    }
+                                @endphp
+                            @endif
+
+                           
+                            <label class="border p-2"><span>{{$color->display_name}}</span> 
+                                <input type="checkbox" value="{{$color->db_name}}" name="flower_color[]" class="no_border_rounded" @if ($checked == "checked") checked @endif >
+                            </label>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+
+            <!-- Field -->
+            <!-- <div class="col-md-6 field_item">
                 <div class="">
                     <label for="" class="field_title">Flower color</label>
                     <select name="flower_color" id="flower_color" class="form-control">
@@ -142,7 +237,7 @@
                         @endforeach
                     </select>
                 </div>
-            </div>
+            </div> -->
 
             <!-- Field -->
             <div class="col-md-6 field_item">

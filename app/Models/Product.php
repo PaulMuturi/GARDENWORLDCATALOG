@@ -18,4 +18,19 @@ class Product extends Model
     {
         return $this->hasMany(ProductImage::class);
     }
+
+    public function foliage_color()
+    {
+        return $this->hasMany(FoliageColor::class);
+    }
+
+    public function flower_color()
+    {
+        return $this->hasMany(FlowerColor::class);
+    }
+
+    public function general_color()
+    {
+        return $this->hasMany(GeneralColor::class);
+    }
 }

@@ -13,8 +13,8 @@
                 <td>CATEGORY</td>
                 <td>PROPERTIES</td>
                 <td>STATUS</td>
+                <td>IMAGE(S)</td>
                 <td>ACTION</td>
-                <td>IMG</td>
             </th>            
             @foreach($products as $product)
                 <tr class="text-muted " style="font-size:">
@@ -36,19 +36,26 @@
                         @endif
                     </td>
                     <td style="font-style:italic">@if($product->publish == 'yes')<span class="text-muted">published</span> @else <span class="text-danger">not_published</span> @endif</td>
-                    <td>
-                        <span class="btn  py-0 btn-dark" onclick="deleteProduct('{{$product->botanical_name}}','{{$product->common_name}}', {{$product->id}})">Del</span>
-                        <a href="{{route('editProduct', $product->id)}}" class="btn btn-warning py-0">Edit </a> 
-                    </td>
+                    
                     @php
                         
                         $prod_img = $product->product_image;
                         $img = '';
-                        if (count($prod_img) > 0){
+                        $imgcount = count($prod_img);
+                        if ($imgcount > 0){
                             $img = $prod_img[0]->image;
                         }
                     @endphp
-                    <td><img src="{{asset('products/'.$img)}}" alt="none" class="" style="max-height:100px"></td>
+                    <td>
+                        @foreach($prod_img as $img)
+                        <img src="{{asset('products/'.$img->image)}}" alt="none" class="" style="max-height:100px">
+                        @endforeach
+                    </td>
+
+                    <td>
+                        <a href="{{route('editProduct', $product->id)}}" class="btn btn-warning py-0">Edit </a> 
+                        <span class="btn  py-0 btn-dark" onclick="deleteProduct('{{$product->botanical_name}}','{{$product->common_name}}', {{$product->id}})">Del</span>
+                    </td>
                 </tr>
             @endforeach
             </table>
