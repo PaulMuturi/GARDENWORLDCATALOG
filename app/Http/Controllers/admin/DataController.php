@@ -184,8 +184,20 @@ class DataController extends Controller
                     'db_name' => 'groundcover'
                 ],
                 [
+                    'display_name' => 'Herbaceous plant',
+                    'db_name' => 'herbaceous_plant'
+                ],
+                [
+                    'display_name' => 'Foliage plant',
+                    'db_name' => 'foliage_plant'
+                ],
+                [
                     'display_name' => 'Short shrub',
                     'db_name' => 'short_shrub'
+                ],
+                [
+                    'display_name' => 'Medium shrub',
+                    'db_name' => 'medium_shrub'
                 ],
                 [
                     'display_name' => 'Tall shrub',
@@ -196,8 +208,16 @@ class DataController extends Controller
                     'db_name' => 'palm'
                 ],
                 [
+                    'display_name' => 'Fern',
+                    'db_name' => 'fern'
+                ],
+                [
                     'display_name' => 'Tree',
                     'db_name' => 'tree'
+                ],
+                [
+                    'display_name' => 'Fruit',
+                    'db_name' => 'fruit'
                 ],
                 [
                     'display_name' => 'Fruit tree',
@@ -211,6 +231,7 @@ class DataController extends Controller
                     'display_name' => 'Climber',
                     'db_name' => 'climber'
                 ],
+                
                 [
                     'display_name' => 'Succulent',
                     'db_name' => 'succulent'

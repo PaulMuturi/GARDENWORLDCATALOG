@@ -58,8 +58,11 @@
                     </td>
                 </tr>
             @endforeach
-            </table>
+            
+        </table>
+        <a class="btn btn-success" style="font-size:smaller" href="{{route('addProduct')}}">Add New</a>
         </div> 
+        
     </section>
 
     <form action="{{route('deleteProduct')}}" method="post" id="delete_product_form" hidden>

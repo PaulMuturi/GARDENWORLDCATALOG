@@ -9,6 +9,9 @@
                 <a class="btn btn-light text-muted" style="font-size:smaller" href="{{route('products')}}">[Back]</a>
             </div>
             @csrf
+            @if (isset($product))
+                <input type="text" name="edit_id" value="{{$product->id}}" hidden>
+            @endif
             <!-- Field -->
             <div class="col-md-6 field_item">
                 <div class="">

@@ -48,20 +48,26 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        $bot_name_exists = Product::where('botanical_name', $request->botanical_name)->first();
-        $com_name_exists = Product::where('common_name', $request->common_name)->first();
         $product;
-        $bot_strlen = strlen(ltrim($request->botanical_name));
-        $com_strlen = strlen(ltrim($request->common_name));
-
-        if ($bot_strlen > 0 && $bot_name_exists){
-            $product =  $bot_name_exists;
-        }
-        elseif ($com_strlen > 0 && $com_name_exists && $bot_strlen == 0){
-            $product =  $com_name_exists;
-        }
-        else{
-            $product = new Product();
+        if (isset($request->edit_id)){
+            //SIMPLY AN EDIT
+            $product = Product::where('id', $request->edit_id)->first();
+        }else{
+            //NEW PRODUCT
+            $bot_name_exists = Product::where('botanical_name', $request->botanical_name)->first();
+            $com_name_exists = Product::where('common_name', $request->common_name)->first();
+            $bot_strlen = strlen(ltrim($request->botanical_name));
+            $com_strlen = strlen(ltrim($request->common_name));
+    
+            if ($bot_strlen > 0 && $bot_name_exists){
+                $product =  $bot_name_exists;
+            }
+            elseif ($com_strlen > 0 && $com_name_exists && $bot_strlen == 0){
+                $product =  $com_name_exists;
+            }
+            else{
+                $product = new Product();
+            }
         }
 
         $product->botanical_name = $request->botanical_name;
