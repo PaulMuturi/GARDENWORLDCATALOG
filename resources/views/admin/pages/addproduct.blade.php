@@ -48,11 +48,13 @@
                     @if(isset($product))
                         <div class="row mb-2">
                             @foreach($product->product_image as $img)
-                            @php  $caption = $img->caption; $img = $img->image; @endphp
-                            <div class="col-4 d-flex flex-column shadow-sm border p-2" id="{{$img}}">
-                                <span class="btn btn-dark py-0 ms-auto" style="font-size:smaller" onclick="removeImage('{{$img}}')">x</span>
-                                <img src="{{asset('products/'.$img)}}" alt="" class="col-12">
-                                <span class="text-muted"><i>{{$caption}}</i></span>
+                            <div class="col-sm-6 col-lg-4 col-8 d-flex flex-column shadow-sm border p-2" id="{{$img}}">
+                                <div class="d-flex">
+                                    <span class="btn btn-dark py-0 me-auto" style="font-size:smaller" onclick="editCaption('{{$img->image}}', '{{$img->id}}', '{{$img->product_id}}', '{{$img->caption}}')">Edit caption</span>
+                                    <span class="btn btn-dark py-0 ms-auto" style="font-size:smaller" onclick="removeImage('{{$img->image}}', '{{$img->id}}', '{{$img->product_id}}')">x</span>
+                                </div>
+                                <img src="{{asset('products/'.$img->image)}}" alt="" class="col-12">
+                                <span class="text-muted"><i>{{$img->caption}}</i></span>
                                 <input hidden type="text" name="existing_image[]" value="{{$img}}" >
                             </div>
                             @endforeach
@@ -122,11 +124,11 @@
             </div>
 
             <!-- Field -->
-            <div class="col-md-6 field_item">
+            <div class="col-md-12 field_item">
                 <div class="">
                     <label for="" class="field_title">General Color (if not a plant)</label>
                     <div class="d-flex">
-                        @foreach($product_fp->general_color as $color)
+                        @foreach($product_fp->colors as $color)
 
                             @php
                                 $checked = "";
@@ -144,7 +146,7 @@
                             @endif
 
                            
-                            <label class="border p-2"><span>{{$color->display_name}}</span> 
+                            <label class="border p-2 text-dark"><span>{{$color->display_name}}</span> 
                                 <input type="checkbox" value="{{$color->db_name}}" name="general_color[]" class="no_border_rounded" @if ($checked == "checked") checked @endif >
                             </label>
                         @endforeach
@@ -160,7 +162,7 @@
                     <label for="" class="field_title">Foliage color</label>
                     <select name="foliage_color" id="foliage_color" class="form-control">
                         <option value="">None selected</option>
-                        @foreach($product_fp->foliage_color as $color)
+                        @foreach($product_fp->colors as $color)
                             <option value="{{$color->db_name}}" @if(isset($product) && $product->foliage_color == $color->db_name) selected='selected' @endif>{{$color->display_name}}</option>
                         @endforeach
                     </select>
@@ -168,11 +170,11 @@
             </div> -->
 
             <!-- Field -->
-            <div class="col-md-6 field_item">
+            <div class="col-md-12 field_item">
                 <div class="">
                     <label for="" class="field_title">Foliage color</label>
                     <div class="d-flex">
-                        @foreach($product_fp->foliage_color as $color)
+                        @foreach($product_fp->colors as $color)
 
                             @php
                                 $checked = "";
@@ -190,7 +192,7 @@
                             @endif
 
                            
-                            <label class="border p-2"><span>{{$color->display_name}}</span> 
+                            <label class="border p-2 text-dark"><span>{{$color->display_name}}</span> 
                                 <input type="checkbox" value="{{$color->db_name}}" name="foliage_color[]" class="no_border_rounded" @if ($checked == "checked") checked @endif >
                             </label>
                         @endforeach
@@ -199,11 +201,11 @@
             </div>
 
             <!-- Field -->
-            <div class="col-md-6 field_item">
+            <div class="col-md-12 field_item">
                 <div class="">
                     <label for="" class="field_title">Flower color</label>
                     <div class="d-flex">
-                        @foreach($product_fp->flower_color as $color)
+                        @foreach($product_fp->colors as $color)
 
                             @php
                                 $checked = "";
@@ -221,7 +223,7 @@
                             @endif
 
                            
-                            <label class="border p-2"><span>{{$color->display_name}}</span> 
+                            <label class="border p-2 text-dark"><span>{{$color->display_name}}</span> 
                                 <input type="checkbox" value="{{$color->db_name}}" name="flower_color[]" class="no_border_rounded" @if ($checked == "checked") checked @endif >
                             </label>
                         @endforeach
@@ -235,7 +237,7 @@
                     <label for="" class="field_title">Flower color</label>
                     <select name="flower_color" id="flower_color" class="form-control">
                         <option value="">None selected</option>
-                        @foreach($product_fp->flower_color as $color)
+                        @foreach($product_fp->colors as $color)
                             <option value="{{$color->db_name}}" @if(isset($product) && $product->flower_color == $color->db_name) selected='selected' @endif>{{$color->display_name}}</option>
                         @endforeach
                     </select>
@@ -376,12 +378,48 @@
         </form> 
     </section>
 
+    <form action="{{route('deleteImg')}}" id="delete_img_form" method="POST" hidden>
+        @csrf
+        <input type="number" name="img_id"  id="delete_img_id">
+        <input type="number" name="product_id"  id="delete_img_product_id">
+    </form>
+
+    <form action="{{route('editCaption')}}" id="edit_caption_form" method="POST" hidden>
+        @csrf
+        <input type="text" name="caption" id="edit_caption_new">
+        <input type="number" name="img_id" id="edit_caption_id">
+        <input type="number" name="product_id" id="edit_caption_product_id">
+    </form>
+
     <script>
-        function removeImage(imgname){
+        function removeImage(img_name, img_id, img_product_id){
             var proceed = confirm("Are you sure you wish to remove the image?");
 
             if (proceed){
-                document.getElementById(imgname).remove();
+                // document.getElementById(imgname).remove();
+                document.getElementById('delete_img_id').value = img_id;
+                document.getElementById('delete_img_product_id').value = img_product_id;
+
+                document.getElementById('delete_img_form').submit();
+            }
+        }
+
+        function editCaption(img_name, img_id, img_product_id, current_caption){
+
+            var cur = `Current caption: ${current_caption} `;
+            if (!current_caption){
+                cur = "";
+            }
+            
+            var new_caption = prompt(`${cur}  (Set new caption for ${img_name})`);
+
+            if (new_caption)
+            {
+                document.getElementById('edit_caption_new').value = new_caption;
+                document.getElementById('edit_caption_id').value = img_id;
+                document.getElementById('edit_caption_product_id').value = img_product_id;
+
+                document.getElementById('edit_caption_form').submit();
             }
         }
     </script>

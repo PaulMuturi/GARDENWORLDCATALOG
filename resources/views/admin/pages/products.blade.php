@@ -3,7 +3,15 @@
 @section('main-content')
     <section class="container">
         <h2 class="text-success">PRODUCTS</h2>
-        <a class="btn btn-success" style="font-size:smaller" href="{{route('addProduct')}}">Add New</a>
+        <div class="row">
+            <div class="col-4">
+
+                <a class="btn btn-success" style="font-size:smaller" href="{{route('addProduct')}}">Add New</a>
+            </div>
+            <div class="col-8">
+                <label for="">Search: <input type="text" id="searchInput" class="border rounded"></label>
+            </div>
+        </div>
         <div class="bg-light p-2">
             @csrf
             <table class="table table-striped">
@@ -17,14 +25,20 @@
                 <td>ACTION</td>
             </th>            
             @foreach($products as $product)
-                <tr class="text-muted " style="font-size:">
+                <tr class="text-muted tr" style="font-size:">
                     <td>{{$loop->index + 1}}</td>
-                    <td class="text-dark"  style="font-size:normal">@if($product->botanical_name){{$product->botanical_name}}@endif @if($product->common_name)({{$product->common_name}})@endif</td>
-                    <td>{{$product->category}}</td>
-                    <td>
+                    <td class="search_param_1 text-dark"  style="font-size:normal">@if($product->botanical_name){{$product->botanical_name}}@endif @if($product->common_name)({{$product->common_name}})@endif</td>
+                    <td class="search_param_2">
+                        @php $cat = str_replace('_', ' ', $product->category)@endphp
+                        {{$cat}} <span hidden>{{$product->category}}</span>
+                    </td>
+                    <td class="search_param_3">
                         @if($product->light_requirement) 
                             @foreach($product->light_requirement as $req)
-                                <span >{{$req->requirement}},</span>
+                            @php $light = str_replace('_', ' ', $req->requirement)@endphp
+                                {{$req->requirement}}, 
+                                {{-- The following is for the sake of searching, it's hidden --}}
+                                <span hidden>{{$light}}</span>
                             @endforeach
                         @endif
                         @if(strlen($product->maintenance) > 0) 
@@ -46,9 +60,10 @@
                             $img = $prod_img[0]->image;
                         }
                     @endphp
-                    <td>
+                    <td class="search_param_4">
                         @foreach($prod_img as $img)
                         <img src="{{asset('products/'.$img->image)}}" alt="none" class="" style="max-height:100px">
+                        <span hidden>{{$img->caption}}</span>
                         @endforeach
                     </td>
 
@@ -61,6 +76,7 @@
             
         </table>
         <a class="btn btn-success" style="font-size:smaller" href="{{route('addProduct')}}">Add New</a>
+
         </div> 
         
     </section>
@@ -81,4 +97,7 @@
             }
         }
     </script>
+
+<script src="{{asset('js/search.js')}}" defer></script>
+
 @endsection

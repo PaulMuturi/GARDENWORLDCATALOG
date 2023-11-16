@@ -18,4 +18,6 @@ Route::get('/addproduct', 'App\Http\Controllers\admin\ProductController@create')
 Route::post('/saveproduct', 'App\Http\Controllers\admin\ProductController@store')->name('saveProduct');
 Route::get('editproduct/{id}', 'App\Http\Controllers\admin\ProductController@edit')->name('editProduct');
 Route::post('/deleteproduct', 'App\Http\Controllers\admin\ProductController@destroy')->name('deleteProduct');
+Route::post('/deleteImg', 'App\Http\Controllers\admin\ProductController@deleteImg')->name('deleteImg');
+Route::post('/editCaption', 'App\Http\Controllers\admin\ProductController@editCaption')->name('editCaption');
 

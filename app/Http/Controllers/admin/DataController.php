@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 class DataController extends Controller
 {
+    
     public function getProductFootprint(){
         $data = [
             'light_requirements' => [
@@ -57,47 +58,12 @@ class DataController extends Controller
                 ],
             ],
 
-            'general_color' => [
-                [
-                    'display_name' => 'White',
-                    'db_name' => 'white'
-                ],
-                [
-                    'display_name' => 'Black',
-                    'db_name' => 'black'
-                ],
+            'colors' => [
                 [
                     'display_name' => 'Green',
                     'db_name' => 'green'
                 ],
                 [
-                    'display_name' => 'Yellow',
-                    'db_name' => 'yellow'
-                ],
-                [
-                    'display_name' => 'Orange',
-                    'db_name' => 'orange'
-                ],
-                [
-                    'display_name' => 'Red',
-                    'db_name' => 'red'
-                ],
-                [
-                    'display_name' => 'Blue',
-                    'db_name' => 'blue'
-                ],
-                [
-                    'display_name' => 'Purple',
-                    'db_name' => 'purple'
-                ],
-                [
-                    'display_name' => 'Pink',
-                    'db_name' => 'pink'
-                ],
-            ],
-
-            'flower_color' => [
-                [
                     'display_name' => 'White',
                     'db_name' => 'white'
                 ],
@@ -120,6 +86,10 @@ class DataController extends Controller
                 [
                     'display_name' => 'Purple',
                     'db_name' => 'purple'
+                ],
+                [
+                    'display_name' => 'Lavender',
+                    'db_name' => 'lavender'
                 ],
                 [
                     'display_name' => 'Pink',
@@ -129,51 +99,13 @@ class DataController extends Controller
                     'display_name' => 'Apricot',
                     'db_name' => 'apricot'
                 ],
-            ],
-
-            'foliage_color' => [
-                [
-                    'display_name' => 'Green',
-                    'db_name' => 'green'
-                ],
-                [
-                    'display_name' => 'Variegated',
-                    'db_name' => 'variegated'
-                ],
-                [
-                    'display_name' => 'White',
-                    'db_name' => 'white'
-                ],
-                [
-                    'display_name' => 'Yellow',
-                    'db_name' => 'yellow'
-                ],
-                [
-                    'display_name' => 'Orange',
-                    'db_name' => 'orange'
-                ],
-                [
-                    'display_name' => 'Red',
-                    'db_name' => 'red'
-                ],
-                [
-                    'display_name' => 'Blue',
-                    'db_name' => 'blue'
-                ],
-                [
-                    'display_name' => 'Purple',
-                    'db_name' => 'purple'
-                ],
-                [
-                    'display_name' => 'Pink',
-                    'db_name' => 'pink'
-                ],
                 [
                     'display_name' => 'Grey',
                     'db_name' => 'grey'
                 ],
             ],
 
+            
             'category' => [
                 [
                     'display_name' => 'Grass',

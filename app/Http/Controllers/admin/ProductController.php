@@ -97,33 +97,6 @@ class ProductController extends Controller
         $product->save();
         // $saved_product = Product::latest()->first();
         $saved_product = $product;
-        //Delete any images that were removed
-        $db_existing_imgs = ProductImage::where('product_id', $saved_product->id)->get();
-    
-        if (isset($request->existing_image)){
-            //check for the extra image in database and delete it
-            
-            if ($db_existing_imgs){
-                foreach($db_existing_imgs as $db_img){
-                    if (!in_array($db_img->image, $request->existing_image)){
-                        //delete it
-                        $imagePath = public_path('products/'.$db_img->image);
-                        if (unlink($imagePath)) { 
-                            ProductImage::where('image', $db_img->image)->where('product_id', $saved_product->id)->delete();
-                        } 
-                    }
-                }
-            }
-        }
-        else if($db_existing_imgs && !isset($request->existing_image)){
-            foreach($db_existing_imgs as $db_img){
-                //delete it
-                $imagePath = public_path('products/'.$db_img->image);
-                if (unlink($imagePath)) { 
-                    ProductImage::where('image', $db_img->image)->where('product_id', $saved_product->id)->delete();
-                } 
-            }
-        }
         
         //Save image
         if ($request->hasFile('image')) {
@@ -223,6 +196,7 @@ class ProductController extends Controller
 
         $product = Product::where('id', $id)->with('light_requirement')->with('foliage_color')->with('flower_color')->with('general_color')->with('product_image')->first();
 
+        // return $product;
         return view('admin.pages.addproduct', compact('product_fp', 'product'));
     }
 
@@ -267,5 +241,28 @@ class ProductController extends Controller
         }
 
         return redirect(route('products'));
+    }
+
+    public function editCaption(Request $request){
+        $img = ProductImage::where('id', $request->img_id)->where('product_id', $request->product_id)->first();
+
+        if ($img){
+            $img->caption = $request->caption;
+            $img->save();
+        }
+
+        return redirect(route('editProduct', $request->product_id));
+    }
+
+    public function deleteImg(Request $request){
+        $img = ProductImage::where('id', $request->img_id)->where('product_id', $request->product_id)->first();
+
+        if ($img){
+            $imagePath = public_path('products/'.$img->image);
+                if (unlink($imagePath)) { 
+                    $img->delete();
+                } 
+            return redirect(route('editProduct', $request->product_id));
+        }
     }
 }
