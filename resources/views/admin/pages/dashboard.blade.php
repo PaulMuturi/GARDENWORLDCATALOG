@@ -21,8 +21,6 @@
 @endphp
 @section('main-content')
     <div class="d-flex flex-column" style="height:100vh; ">
-
-        <h1 class="text-center py-5 text-success shadow p-4" style="background-color: rgba(0, 128, 0, 0.058)">GARDEN WORLD CATALOG</h1>
         
         <div class="row container m-auto  p-4"> 
             @foreach ($data as $item)
