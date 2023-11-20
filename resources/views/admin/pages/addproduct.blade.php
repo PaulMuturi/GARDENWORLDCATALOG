@@ -53,7 +53,7 @@
                                     <span class="btn btn-dark py-0 me-auto" style="font-size:smaller" onclick="editCaption('{{$img->image}}', '{{$img->id}}', '{{$img->product_id}}', '{{$img->caption}}')">Edit caption</span>
                                     <span class="btn btn-dark py-0 ms-auto" style="font-size:smaller" onclick="removeImage('{{$img->image}}', '{{$img->id}}', '{{$img->product_id}}')">x</span>
                                 </div>
-                                <img src="{{asset('products/'.$img->image)}}" alt="" class="col-12">
+                                <img src="{{asset('product_images/'.$img->image)}}" alt="" class="col-12">
                                 <span class="text-muted"><i>{{$img->caption}}</i></span>
                                 <input hidden type="text" name="existing_image[]" value="{{$img}}" >
                             </div>
