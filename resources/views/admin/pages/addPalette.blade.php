@@ -20,7 +20,7 @@
                     <select name="project_id" id="project_id" class="form-control m-auto" required>
                         <option value="">select project</option>
                         @foreach($projects as $project)
-                            <option @if (isset($palette) && $palette->project_id == $project->id) selected  @endif value="{{$project->id}}">{{$project->title}}</option>
+                            <option @if (isset($palette) && $palette->project_id == $project->id) selected  @endif value="{{$project->id}}">{{$project->title}} @if($project->client)({{$project->client}})@endif</option>
                         @endforeach
                     </select>
                 </div>
@@ -51,22 +51,24 @@
                 <span class="btn btn-success" onclick="addSection({{$palette_id}})">Add Section</span>
             </div>
 
-            <div class="container mt-4">
-                <div class="row">
-                    @foreach ($palette->sections as $item)
-                        <div class="col-lg-4 col-sm-6 p-2 border rounded shadow">
-                            <div class="bg-white p-3" style="min-height: 60px">                                
-                                <div class="d-flex">
-                                    <h5 class="me-auto my-auto text-success">{{$item->title}}</h5>
-                                    <a href="{{route('editSection', $item->id)}}" class="btn btn-warning ms-auto">Edit</a>
+            @if (isset($palette))
+                <div class="container mt-4">
+                    <div class="row">
+                        @foreach ($palette->sections as $item)
+                            <div class="col-lg-4 col-sm-6 p-2 border rounded shadow">
+                                <div class="bg-white p-3" style="min-height: 60px">                                
+                                    <div class="d-flex">
+                                        <h5 class="me-auto my-auto text-success">{{$item->title}}</h5>
+                                        <a href="{{route('editSection', $item->id)}}" class="btn btn-warning ms-auto">Edit</a>
+                                    </div>
+                                    <hr>
+                                    <p class="text-muted">{{$item->notes}}</p>
                                 </div>
-                                <hr>
-                                <p class="text-muted">{{$item->notes}}</p>
                             </div>
-                        </div>
-                    @endforeach
+                        @endforeach
+                    </div>
                 </div>
-            </div>
+            @endif
         </form> 
     </section>
     <form action="{{route('deletePalette')}}" method="post" id="delete_palette_form" hidden>

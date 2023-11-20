@@ -186,6 +186,24 @@ class PaletteController extends Controller
 
         return redirect(route('palettes'));
     }
+
+    //WEB FUNCTIONS FROM HERE
+
+    public function showPalette($id){
+        $palette = Palette::where('id', $id)->with('sections')->first();
+        $project = Project::where('id', $palette->project_id)->first();
+        $products = Product::with('light_requirement')->with('foliage_color')->with('flower_color')->with('general_color')->with('product_image')->get();
+        // return $products;
+        return view('web.pages.showPalette', compact('palette', 'project', 'products'));
+        //TODO: IMPLEMENT CATEGORIES, RETURN TO A DIFFERENT VIEW
+        // $full_shade = [];
+        // $partial_shade = [];
+        // $full_sun = [];
+
+
+
+
+    }
 }
 
 

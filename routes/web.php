@@ -36,3 +36,7 @@ Route::post('/addsection', 'App\Http\Controllers\admin\PaletteController@addSect
 Route::get('/sectionpage/{id}', 'App\Http\Controllers\admin\PaletteController@sectionPage')->name('sectionPage');
 Route::post('/savesection', 'App\Http\Controllers\admin\PaletteController@saveSection')->name('saveSection');
 Route::get('/editsection/{id}', 'App\Http\Controllers\admin\PaletteController@editSection')->name('editSection');
+
+
+//WEB ROUTES
+Route::get('/showpalette/{id}', 'App\Http\Controllers\admin\PaletteController@showPalette')->name('showPalette');

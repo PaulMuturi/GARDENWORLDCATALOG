@@ -13,28 +13,34 @@ class DataController extends Controller
             'light_requirements' => [
                 [
                     'display_name' => 'Low',
-                    'db_name' => 'low'
+                    'db_name' => 'low',
+                    'parent' => 'Full shade'
                 ],
 
                 [
                     'display_name' => 'Full Shade',
-                    'db_name' => 'full_shade'
+                    'db_name' => 'full_shade',
+                    'parent' => 'Full shade'
                 ],
                 [
                     'display_name' => 'Partial Shade',
-                    'db_name' => 'partial_shade'
+                    'db_name' => 'partial_shade',
+                    'parent' => 'Partial shade'
                 ],
                 [
                     'display_name' => 'Bright indirect sun',
-                    'db_name' => 'bright_indirect_sun'
+                    'db_name' => 'bright_indirect_sun',
+                    'parent' => 'Partial shade'
                 ],
                 [
                     'display_name' => 'Dappled',
-                    'db_name' => 'dappled'
+                    'db_name' => 'dappled',
+                    'parent' => 'Partial Shade'
                 ],
                 [
                     'display_name' => 'Full sun',
-                    'db_name' => 'full_sun'
+                    'db_name' => 'full_sun',
+                    'parent' => 'Full sun'
                 ],
             ],
 
@@ -109,68 +115,84 @@ class DataController extends Controller
             'category' => [
                 [
                     'display_name' => 'Grass',
-                    'db_name' => 'grass'
+                    'db_name' => 'grass',
+                    'parent' => 'Groundcover'
                 ],
                 [
                     'display_name' => 'Groundcover',
-                    'db_name' => 'groundcover'
+                    'db_name' => 'groundcover',
+                    'parent' => 'Groundcovers'
                 ],
                 [
                     'display_name' => 'Herbaceous plant',
-                    'db_name' => 'herbaceous_plant'
+                    'db_name' => 'herbaceous_plant',
+                    'parent' => 'Herbaceous plant'
                 ],
                 [
                     'display_name' => 'Foliage plant',
-                    'db_name' => 'foliage_plant'
+                    'db_name' => 'foliage_plant',
+                    'parent' => 'Foliage plant'
                 ],
                 [
                     'display_name' => 'Short shrub',
-                    'db_name' => 'short_shrub'
+                    'db_name' => 'short_shrub',
+                    'parent' => 'Shrubs'
                 ],
                 [
                     'display_name' => 'Medium shrub',
-                    'db_name' => 'medium_shrub'
+                    'db_name' => 'medium_shrub',
+                    'parent' => 'Shrubs'
                 ],
                 [
                     'display_name' => 'Tall shrub',
-                    'db_name' => 'tall_shrub'
+                    'db_name' => 'tall_shrub',
+                    'parent' => 'Shrubs'
                 ],
                 [
                     'display_name' => 'Palm',
-                    'db_name' => 'palm'
+                    'db_name' => 'palm',
+                    'parent' => 'Palms'
                 ],
                 [
                     'display_name' => 'Fern',
-                    'db_name' => 'fern'
+                    'db_name' => 'fern',
+                    'parent' => 'Foliage plants'
                 ],
                 [
                     'display_name' => 'Tree',
-                    'db_name' => 'tree'
+                    'db_name' => 'tree',
+                    'parent' => 'Trees'
                 ],
                 [
                     'display_name' => 'Fruit',
-                    'db_name' => 'fruit'
+                    'db_name' => 'fruit',
+                    'parent' => 'Fruit'
                 ],
                 [
                     'display_name' => 'Fruit tree',
-                    'db_name' => 'fruit_tree'
+                    'db_name' => 'fruit_tree',
+                    'parent' => 'Trees'
                 ],
                 [
                     'display_name' => 'Herb',
-                    'db_name' => 'herb'
+                    'db_name' => 'herb',
+                    'parent' => 'Herbs'
                 ],
                 [
                     'display_name' => 'Climber',
-                    'db_name' => 'climber'
+                    'db_name' => 'climber',
+                    'parent' => 'Climbers'
                 ],
                 
                 [
                     'display_name' => 'Succulent',
-                    'db_name' => 'succulent'
+                    'db_name' => 'succulent',
+                    'parent' => 'Succulents'
                 ],
                 [
                     'display_name' => 'Other',
-                    'db_name' => 'other'
+                    'db_name' => 'other',
+                    'parent' => 'Others'
                 ],
             ],
 
