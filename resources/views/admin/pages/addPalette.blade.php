@@ -39,24 +39,28 @@
                 <input type="submit" value="SAVE" class="btn btn-warning">
             </div>
 
-            <h1 class="text-success mt-4">SECTIONS</h1><hr>
+            <hr class="mt-3">
 
-            <div class="d-flex">
+            <div class="d-flex mt-3 bg-success px-3 py-1 rounded">
+                <h1 class="text-light">SECTIONS </h1>
+
                 @php         
                     $palette_id = null;           
                     if (isset($palette)){
                         $palette_id = $palette->id;
                     }
                 @endphp
-                <span class="btn btn-success" onclick="addSection({{$palette_id}})">Add Section</span>
+                <div class="m-auto">
+                    <span class="btn btn-success m-auto border" onclick="addSection({{$palette_id}})">Add Section</span>
+                </div>
             </div>
 
             @if (isset($palette))
                 <div class="container mt-4">
                     <div class="row">
                         @foreach ($palette->sections as $item)
-                            <div class="col-lg-4 col-sm-6 p-2 border rounded shadow">
-                                <div class="bg-white p-3" style="min-height: 60px">                                
+                            <div class="col-lg-4 bg-success col-sm-6 border rounded shadow">
+                                <div class="bg-light p-3" style="min-height: 60px">                                
                                     <div class="d-flex">
                                         <h5 class="me-auto my-auto text-success">{{$item->title}}</h5>
                                         <a href="{{route('editSection', $item->id)}}" class="btn btn-warning ms-auto">Edit</a>

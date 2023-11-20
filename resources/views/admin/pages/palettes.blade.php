@@ -37,7 +37,7 @@
                 <tr class="text-muted tr" style="font-size:">
                     <td>{{$loop->index + 1}}</td>
                     <td class="search_param_1 text-dark"  style="font-size:normal">{{$project->title}}
-                        <a href="{{route('showPalette',$project->palette->id )}}" class="btn btn-warning text-italic text-small">Show palette</a>
+                        <a target="_blank" href="{{route('showPalette',$project->palette->id )}}" class="btn btn-warning text-italic text-small">Show palette</a>
                     </td>
                     <td class="search_param_2">{{$project->client}}</td>
                     <td>

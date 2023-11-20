@@ -41,15 +41,15 @@
                                     @if ($prod_id == $product->id && $img_id == $img->id)
                                         {{-- Show the image and its info --}}
                                         <div class="shadow m-auto  rounded mx-1 my-2 p-1 d-flex flex-column" style="max-width:250px;">
-                                            <img src="{{asset('product_images/'.$img->image)}}" alt="" class="m-auto shadow" style="max-height: 230px; max-width:230px">
+                                            <img src="{{asset('product_images/'.$img->image)}}" alt="" class="m-auto shadow" style="max-height: 200px; max-width:230px">
                                             <div class=" p-2 text-center">
                                                 <span class="text-muted text-italic m-auto">{{$img->caption}}</span> <br>
                                                 <span class="text-success">
                                                     @if($product->botanical_name){{$product->botanical_name}}@endif @if($product->common_name)({{$product->common_name}})@endif
                                                 </span><br>
                                                 @if(count($product->light_requirement))
-                                                    <span class="text-warning">Lighting:   
-                                                        <span class="text-dark"> @foreach($product->light_requirement as $req) @if($loop->index > 0),@endif{{$req->requirement}}@endforeach</span>
+                                                    <span class="text-warning text-smaller">Lighting:   
+                                                        <span class="text-muted"> @foreach($product->light_requirement as $req)@if($loop->index > 0),@endif {{$req->requirement}}@endforeach</span>
                                                     </span>
                                                 @endif
                                             </div>
