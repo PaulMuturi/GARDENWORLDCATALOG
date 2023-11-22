@@ -192,13 +192,46 @@ class PaletteController extends Controller
     public function showPalette($id){
         $palette = Palette::where('id', $id)->with('sections')->first();
         $project = Project::where('id', $palette->project_id)->first();
-        $products = Product::with('light_requirement')->with('foliage_color')->with('flower_color')->with('general_color')->with('product_image')->get();
+        $categorized_products = [];
+
+        $undercanopy = Product::where('category', '!=', 'tree')
+                        ->where('category', '!=', 'fruit_tree')
+                        ->where('category', '!=', 'herb')
+                        ->where('category', '!=', 'palm')
+                        ->where('category', '!=', 'fruit')
+                        ->with('light_requirement')
+                        ->with('foliage_color')->with('flower_color')->with('general_color')->with('product_image')
+                        ->get();
+                        
+        $trees = Product::where('category', 'tree')->with('light_requirement')->with('foliage_color')->with('flower_color')->with('general_color')->with('product_image')->get();
+     
+        $edibles = Product::where('category','herb')->orWhere('category', 'fruit')->with('light_requirement')->with('foliage_color')->with('flower_color')->with('general_color')->with('product_image')->get();
+        
+        $fruit_trees = Product::where('category','fruit_tree')->with('light_requirement')->with('foliage_color')->with('flower_color')->with('general_color')->with('product_image')->get();
+        
+        $palms = Product::where('category','palm')->with('light_requirement')->with('foliage_color')->with('flower_color')->with('general_color')->with('product_image')->get();
+
         // return $products;
-        return view('web.pages.showPalette', compact('palette', 'project', 'products'));
-        //TODO: IMPLEMENT CATEGORIES, RETURN TO A DIFFERENT VIEW
-        // $full_shade = [];
-        // $partial_shade = [];
-        // $full_sun = [];
+        if ($undercanopy){
+            array_push($categorized_products, ['title' => "Under Canopy",  'notes' => 'Groundcovers, Herbaceous plants & Shrubs', 'data' => $undercanopy]);
+        }
+        if ($palms){
+            array_push($categorized_products, ['title' => "Palms",'notes' => 'Palms and Palm-like plants', 'data' => $palms]);
+        }
+        if ($edibles){
+            array_push($categorized_products, ['title' => "Edibles", 'notes' => 'Fruits, vines & herbs', 'data' => $edibles]);
+        }
+        if ($fruit_trees){
+            array_push($categorized_products, ['title' => "Fruit Trees",'notes' => '', 'data' => $fruit_trees]);
+        }
+        if ($trees){
+            array_push($categorized_products, ['title' => "Trees",'notes' => 'Shade / Screening trees', 'data' => $trees]);
+        }
+
+        $categorized_products = json_decode(json_encode($categorized_products));
+        // return $categorized_products;
+        return view('web.pages.showPalette', compact('palette', 'project', 'categorized_products'));
+        
 
 
 

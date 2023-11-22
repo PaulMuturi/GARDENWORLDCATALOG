@@ -102,7 +102,7 @@ class ProductController extends Controller
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $imageName = $image->getClientOriginalName();
-            $image->move(public_path('products'), $imageName);
+            $image->move(public_path('product_images'), $imageName);
 
             $product_image = ProductImage::where('image', $imageName)->where('product_id', $saved_product->id)->first();
 
@@ -233,7 +233,7 @@ class ProductController extends Controller
 
             foreach($db_existing_imgs as $db_img){
                 //delete it
-                $imagePath = public_path('products/'.$db_img->image);
+                $imagePath = public_path('product_images/'.$db_img->image);
                 if (unlink($imagePath)) { 
                     ProductImage::where('image', $db_img->image)->where('product_id', $request->delete_product_id)->delete();
                 } 
@@ -258,7 +258,7 @@ class ProductController extends Controller
         $img = ProductImage::where('id', $request->img_id)->where('product_id', $request->product_id)->first();
 
         if ($img){
-            $imagePath = public_path('products/'.$img->image);
+            $imagePath = public_path('product_images/'.$img->image);
                 if (unlink($imagePath)) { 
                     $img->delete();
                 } 
