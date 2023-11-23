@@ -4,7 +4,7 @@
     <section class="container">
         <h2 class="text-success">@if(isset($palette))EDIT @else ADD @endif PALETTE</h2>
        
-        <form action="{{route('savePalette')}}" method="POST" style="" class="row bg-light p-2" enctype="multipart/form-data">
+        <form action="{{route('savePalette')}}" id="mainForm" onsubmit="enableProjectId(event)" method="POST" style="" class="row bg-light p-2" enctype="multipart/form-data">
             <div class=" d-flex shadow-sm p-2">
                 <a class="btn btn-light text-muted" style="font-size:smaller" href="{{route('palettes')}}">[Back]</a>
             </div>
@@ -16,11 +16,11 @@
             <!-- Field -->
             <div class="col-md-6 field_item">
                 <div class="">
-                    <label for="" class="field_title" id="pick_project">*Pick a Project</label>
+                    <label for="" class="field_title" id="pick_project">*Project</label>
                     <select name="project_id" id="project_id" class="form-control m-auto" required>
                         <option value="">select project</option>
                         @foreach($projects as $project)
-                            <option @if (isset($palette) && $palette->project_id == $project->id) selected  @endif value="{{$project->id}}">{{$project->title}} @if($project->client)({{$project->client}})@endif</option>
+                            <option @if (isset($palette) && $palette->project_id == $project->id) selected id="enable" @endif @if (in_array($project->id, $projects_with_palette)) disabled @endif value="{{$project->id}}">{{$project->title}} @if($project->client)({{$project->client}})@endif</option>
                         @endforeach
                     </select>
                 </div>
@@ -128,6 +128,14 @@
 
             document.getElementById('add_section_form').submit();
         }
+    }
+
+    function enableProjectId(event){
+        event.preventDefault();
+
+        document.getElementById('enable').removeAttribute('disabled');
+        document.getElementById('mainForm').submit();
+        
     }
 </script>
 @endsection

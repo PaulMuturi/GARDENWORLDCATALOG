@@ -405,7 +405,6 @@
         }
 
         function editCaption(img_name, img_id, img_product_id, current_caption){
-
             var cur = `Current caption: ${current_caption} `;
             if (!current_caption){
                 cur = "";

@@ -1,7 +1,7 @@
 @extends('admin.app')
 
 @section('main-content')
-    <section class="container">
+    <section class="container-fluid">
         <div class=" d-flex shadow-sm p-2">
             <a class="btn btn-light text-muted" style="font-size:smaller" href="{{route('dashboard')}}">[Back]</a>
         </div>

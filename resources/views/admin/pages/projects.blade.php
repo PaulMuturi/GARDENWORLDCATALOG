@@ -1,7 +1,7 @@
 @extends('admin.app')
 
 @section('main-content')
-    <section class="container">
+    <section class="container-fluid">
         <div class=" d-flex shadow-sm p-2">
             <a class="btn btn-light text-muted" style="font-size:smaller" href="{{route('dashboard')}}">[Back]</a>
         </div>
@@ -37,7 +37,11 @@
                 <tr class="text-muted tr" style="font-size:">
                     <td>{{$loop->index + 1}}</td>
                     <td class="search_param_1 text-dark"  style="font-size:normal">{{$project->title}}</td>
-                    <td class="search_param_2">{{$project->client}}</td>
+                    <td class="search_param_2">{{$project->client}}
+                        @if (isset($project->palette->id))
+                            <a target="_blank" href="{{route('showPalette',$project->palette->id )}}" class="btn btn-warning text-italic text-small">Show palette</a>
+                        @endif
+                    </td>
                     <td class="search_param_3">{{$project->scope}}</td>
                     <td style="font-style:italic">@if($project->publish == 'yes')<span class="text-muted">published</span> @else <span class="text-danger">not_published</span> @endif</td>
                     <td>

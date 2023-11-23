@@ -27,7 +27,7 @@ class PaletteController extends Controller
     {
         $projects = Project::with('palette')->whereHas('palette', function ($query) {
             $query->where('id', '!=', null);
-        })->get();
+        })->orderBy('created_at', 'desc')->get();
 
         return view('admin.pages.palettes', compact('projects'));
     }
@@ -39,7 +39,7 @@ class PaletteController extends Controller
      */
     public function create()
     {
-        $projects = Project::all();
+        $projects = Project::orderBy('created_at', 'desc')->get();
 
         return view('admin.pages.addPalette', compact('projects'));
     }
@@ -53,6 +53,7 @@ class PaletteController extends Controller
     public function store(Request $request)
     {
         $palette = Palette::where('project_id', $request->project_id)->first();
+
         if (!$palette){
             $palette = new Palette();
         }
@@ -86,8 +87,16 @@ class PaletteController extends Controller
     public function edit($id)
     {
         $palette = Palette::where('id', $id)->with('sections')->first();
-        $projects = Project::all();
-        return view('admin.pages.addPalette', compact('projects', 'palette'));
+        $projects = Project::orderBy('created_at', 'desc')->get();
+        $all_palettes = Palette::all();
+
+        
+        $projects_with_palette = [];
+        foreach($all_palettes as $pal){
+            array_push($projects_with_palette, $pal->project_id);
+        }
+
+        return view('admin.pages.addPalette', compact('projects', 'palette', 'projects_with_palette'));
     }
 
     /**
@@ -231,11 +240,6 @@ class PaletteController extends Controller
         $categorized_products = json_decode(json_encode($categorized_products));
         // return $categorized_products;
         return view('web.pages.showPalette', compact('palette', 'project', 'categorized_products'));
-        
-
-
-
-
     }
 }
 

@@ -90,17 +90,22 @@ class DataController extends Controller
                     'db_name' => 'blue'
                 ],
                 [
+                    'display_name' => 'Pink',
+                    'db_name' => 'pink'
+                ],
+                [
                     'display_name' => 'Purple',
                     'db_name' => 'purple'
+                ],
+                [
+                    'display_name' => 'Bronze',
+                    'db_name' => 'bronze'
                 ],
                 [
                     'display_name' => 'Lavender',
                     'db_name' => 'lavender'
                 ],
-                [
-                    'display_name' => 'Pink',
-                    'db_name' => 'pink'
-                ],
+                
                 [
                     'display_name' => 'Apricot',
                     'db_name' => 'apricot'
@@ -108,6 +113,10 @@ class DataController extends Controller
                 [
                     'display_name' => 'Grey',
                     'db_name' => 'grey'
+                ],
+                [
+                    'display_name' => 'Variegated',
+                    'db_name' => 'variegated'
                 ],
             ],
 

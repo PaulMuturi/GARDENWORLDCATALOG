@@ -16,7 +16,7 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        $projects = Project::all();
+        $projects = Project::orderBy('created_at', 'desc')->get();
         return view('admin.pages.projects', compact('projects'));
     }
 
@@ -45,7 +45,7 @@ class ProjectController extends Controller
         {
             $project = Project::where('title', $request->title)->where('client', $request->client)->first();
             if ($project){
-                $projects = Project::all();
+                $projects = Project::orderBy('created_at', 'desc')->get();
                 $message = "Error! could not save project. A similar project for a similar client already exists";
                 return view('admin.pages.projects', compact('message', 'projects'));
             }
