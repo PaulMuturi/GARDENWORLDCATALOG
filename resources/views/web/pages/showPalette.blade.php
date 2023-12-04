@@ -30,6 +30,7 @@
                         @foreach ($categorized_products as $cat_product)
                         <div class="m-auto py-1 d-flex flex-wrap w-100" style="justify-content:center">
                             {{-- check if categroy has any data --}}
+
                             @php
                                 $iscat = false;
                                 foreach ($cat_product->data as $product) {
@@ -48,10 +49,10 @@
                             @endphp
 
                             @if ($iscat)
-                                {{-- Category name hidden by default --}}
-                                <div class="text-center shadow-sm d-flex px-3 my-auto" id="{{$cat_product->title}}" style="max-height:200px; max-width:250px" >
+                                {{-- UNCOMMENT IF AUTO-CATEGORIZATION --}}
+                                {{-- <div class="text-center shadow-sm d-flex px-3 my-auto" id="{{$cat_product->title}}" style="max-height:200px; max-width:250px" >
                                     <h5 class="me-auto text-success m-auto p-3" ><span class="text-underline">{{$cat_product->title}}</span>@if($cat_product->notes) <br><span class="text-smaller lead">{{$cat_product->notes}}</span>@endif </h5>
-                                </div>
+                                </div> --}}
                                     {{-- Loop through images of a product --}}
                                     @foreach ($cat_product->data as $product)                               
                                         @foreach ($product->product_image as $img)
@@ -66,7 +67,7 @@
                                                     <span class="{{$cat_product->title}}" hidden></span>
                                                     {{-- Show the image and its info --}}
                                                     <div class="shadow-sm  m-auto  rounded mx-1 my-1 p-1 d-flex flex-column" style="max-width:250px;">
-                                                        <img src="{{asset('product_images/'.$img->image)}}" alt="" class="mx-auto" style="max-height: 185px; max-width:240px">
+                                                        <img src="{{asset('product_images/'.$img->image)}}" alt="" class="mx-auto" style="max-height: 210px; max-width:240px">
                                                         <div class=" p-1 text-center">
                                                             @if ($img->caption)<span class="text-muted text-italic m-auto text-smaller" style="text-transform: capitalize">{{$img->caption}}</span> <br>@endif
                                                             <span class="text-success">
@@ -77,12 +78,13 @@
                                                                 <span class="text-muted text-smaller text-italic "> -- {{$product->category}} --</span>
                                                             @endif
                     
-                                                            @if(count($product->light_requirement))
+                                                            {{-- UNCOMMENT FOR LIGHTING INFO --}}
+                                                            {{-- @if(count($product->light_requirement))
                                                             <br>
                                                                 <span class="text-warning text-smaller">Lighting:   
                                                                     <span class="text-muted"> @foreach($product->light_requirement as $req)@if($loop->index > 0),@endif {{$req->requirement}}@endforeach</span>
                                                                 </span>
-                                                            @endif
+                                                            @endif --}}
                                                                                            
                                                         </div>
                                                     </div>

@@ -203,6 +203,12 @@ class PaletteController extends Controller
         $project = Project::where('id', $palette->project_id)->first();
         $categorized_products = [];
 
+        $all_plants = Product::with('light_requirement')->with('foliage_color')->with('flower_color')->with('general_color')->with('product_image')->get();
+        array_push($categorized_products, ['title' => "",'notes' => '', 'data' => $all_plants]);
+
+        // UNCOMMENT FOR AUTO-CATEGORIZATION
+
+        /*
         $undercanopy = Product::where('category', '!=', 'tree')
                         ->where('category', '!=', 'fruit_tree')
                         ->where('category', '!=', 'herb')
@@ -235,7 +241,8 @@ class PaletteController extends Controller
         }
         if ($trees){
             array_push($categorized_products, ['title' => "Trees",'notes' => 'Shade / Screening trees', 'data' => $trees]);
-        }
+        } 
+        */
 
         $categorized_products = json_decode(json_encode($categorized_products));
         // return $categorized_products;
