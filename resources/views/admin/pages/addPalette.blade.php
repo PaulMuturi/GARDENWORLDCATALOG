@@ -20,7 +20,7 @@
                     <select name="project_id" id="project_id" class="form-control m-auto" required>
                         <option value="">select project</option>
                         @foreach($projects as $project)
-                            <option @if (isset($palette) && $palette->project_id == $project->id) selected id="enable" @endif @if (in_array($project->id, $projects_with_palette)) disabled @endif value="{{$project->id}}">{{$project->title}} @if($project->client)({{$project->client}})@endif</option>
+                            <option @if (isset($palette) && $palette->project_id == $project->id) selected id="enable" @endif @if (isset($projects_with_palette) && in_array($project->id, $projects_with_palette)) disabled @endif value="{{$project->id}}">{{$project->title}} @if($project->client)({{$project->client}})@endif</option>
                         @endforeach
                     </select>
                 </div>

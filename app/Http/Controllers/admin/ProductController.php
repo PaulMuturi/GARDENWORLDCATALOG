@@ -11,6 +11,8 @@ use App\Models\LightRequirement;
 use App\Models\FoliageColor;
 use App\Models\FlowerColor;
 use App\Models\GeneralColor;
+use App\Models\Gardentype;
+use App\Models\ProductCategory;
 
 use Illuminate\Support\Facades\Storage;
 
@@ -24,7 +26,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::with('light_requirement')->with('foliage_color')->with('flower_color')->with('general_color')->with('product_image')->get();
+        $products = Product::with('light_requirement')->with('foliage_color')->with('flower_color')->with('general_color')->with('product_image')->with('gardentype')->get();
         return view('admin.pages.products', compact('products'));
     }
 
@@ -72,7 +74,7 @@ class ProductController extends Controller
 
         $product->botanical_name = $request->botanical_name;
         $product->common_name = $request->common_name;
-        $product->category = $request->category;
+        $product->main_category = $request->main_category;
         $product->selling_price = $request->selling_price;
         $product->max_discounted_price = $request->max_discounted_price;
         $product->selling_price = $request->selling_price;
@@ -80,6 +82,7 @@ class ProductController extends Controller
         $product->stocked_qty = $request->stocked_qty;
         $product->stocked_qty_units = $request->stocked_qty_units;
         $product->notes = $request->notes;
+        $product->old_info = $request->old_info;
         $product->publish = $request->publish;
         // $product->foliage_color = $request->foliage_color;
         // $product->flower_color = $request->flower_color;
@@ -166,6 +169,28 @@ class ProductController extends Controller
                 $col->product_id = $saved_product->id;
                 $col->color = $color;
                 $col->save();
+            }
+        }
+
+        Gardentype::where('product_id', $saved_product->id)->delete();
+        
+        if (isset($request->gardentype)){
+            foreach($request->gardentype as $type){
+                $typ = new Gardentype();
+                $typ->product_id = $saved_product->id;
+                $typ->gardentype = $type;
+                $typ->save();
+            }
+        }
+
+        ProductCategory::where('product_id', $saved_product->id)->delete();
+        
+        if (isset($request->categories)){
+            foreach($request->categories as $cat){
+                $category = new ProductCategory();
+                $category->product_id = $saved_product->id;
+                $category->category = $cat;
+                $category->save();
             }
         }
 
@@ -259,10 +284,56 @@ class ProductController extends Controller
 
         if ($img){
             $imagePath = public_path('product_images/'.$img->image);
-                if (unlink($imagePath)) { 
-                    $img->delete();
+                if (file_exists($imagePath)) { 
+                    unlink($imagePath);
                 } 
+                $img->delete();
             return redirect(route('editProduct', $request->product_id));
         }
     }
+
+
+    //ONE TIME FUNCTION NO LONGER NEEDED - WERE USED TO EXTRACT DATA TO A NEW CREATED TABLE
+
+    /*public function categoryToNewTable(){
+        $all_products = Product::all();
+
+        foreach ($all_products as $prod){
+            if ($prod->category){
+                $cat = new ProductCategory();
+
+                $cat->product_id = $prod->id;
+                $cat->category = $prod->category;
+                $cat->save();
+            }
+        }
+        
+        return "Copy task complete";
+    }
+
+    public function removeOldCategories(){
+        $all_products = Product::all();
+
+        foreach ($all_products as $prod){
+            if ($prod->category){         
+                $prod->category = NULL;
+                $prod->save();
+            }
+        }
+        
+        return "Remove task complete";
+    }
+    public function mainCategoryAllPlants(){
+        $all_products = Product::all();
+
+        foreach ($all_products as $prod){
+                  
+            $prod->main_category = 'plants';
+            $prod->save();
+           
+        }
+        
+        return "Remove task complete";
+    }*/
+    
 }

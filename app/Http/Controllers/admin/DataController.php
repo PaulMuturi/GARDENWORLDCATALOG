@@ -82,6 +82,10 @@ class DataController extends Controller
                     'db_name' => 'orange'
                 ],
                 [
+                    'display_name' => 'Golden',
+                    'db_name' => 'golden'
+                ],
+                [
                     'display_name' => 'Red',
                     'db_name' => 'red'
                 ],
@@ -117,6 +121,29 @@ class DataController extends Controller
                 [
                     'display_name' => 'Variegated',
                     'db_name' => 'variegated'
+                ],
+            ],
+
+            'main_category' => [
+                [
+                    'display_name' => 'Plants',
+                    'db_name' => 'plants',
+                ],
+                [
+                    'display_name' => 'Potted plants',
+                    'db_name' => 'potted_plants',
+                ],
+                [
+                    'display_name' => 'Pots & Containers',
+                    'db_name' => 'pots_containers',
+                ],
+                [
+                    'display_name' => 'Inputs',
+                    'db_name' => 'inputs',
+                ],
+                [
+                    'display_name' => 'Tools',
+                    'db_name' => 'tools',
                 ],
             ],
 
@@ -173,6 +200,11 @@ class DataController extends Controller
                     'parent' => 'Trees'
                 ],
                 [
+                    'display_name' => 'Upright Growing Screen Tree',
+                    'db_name' => 'upright_growing_screen_tree',
+                    'parent' => 'Trees'
+                ],
+                [
                     'display_name' => 'Fruit',
                     'db_name' => 'fruit',
                     'parent' => 'Fruit'
@@ -202,6 +234,21 @@ class DataController extends Controller
                     'display_name' => 'Other',
                     'db_name' => 'other',
                     'parent' => 'Others'
+                ],
+            ],
+
+            'gardentype' => [
+                [
+                    'display_name' => 'Tropical Gardens',
+                    'db_name' => 'tropical',
+                ],
+                [
+                    'display_name' => 'Herbs Gardens',
+                    'db_name' => 'herbs',
+                ],
+                [
+                    'display_name' => 'Mediterranean Gardens',
+                    'db_name' => 'mediterranean',
                 ],
             ],
 

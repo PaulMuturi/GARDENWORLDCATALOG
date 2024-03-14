@@ -24,6 +24,7 @@
             <th >
                 <!-- <td>NO</td> -->
                 <td class="text-bold">NAME</td>
+                <td class="text-bold">PRICE(KSH)</td>
                 <td class="text-bold">CATEGORY</td>
                 <td class="text-bold">PROPERTIES</td>
                 <td class="text-bold">STATUS</td>
@@ -32,15 +33,23 @@
             </th>            
             @foreach($products as $product)
                 <tr class="text-muted tr" style="font-size:">
-                    <td>{{$loop->index + 1}}</td>
-                    <td class="search_param_1 text-dark"  style="font-size:normal">@if($product->botanical_name){{$product->botanical_name}}@endif @if($product->common_name)({{$product->common_name}})@endif</td>
-                    <td class="search_param_2">
-                        @php $cat = str_replace('_', ' ', $product->category)@endphp
-                        {{$cat}} <span hidden>{{$product->category}}</span> 
+                    <td><span @if(!$product->selling_price) class="text-danger text-bold text-smaller text-underline"@endif>{{$loop->index + 1}}</span></td>
+                    <td class="search_param_1 text-dark" @if(isset($product)) title="{{$product->notes}}" @endif style="font-size:normal">@if($product->botanical_name){{$product->botanical_name}}@endif @if($product->common_name)({{$product->common_name}})@endif</td>
+                    <td class="search_param_3 text-small">
+                        @if($product->selling_price)<span class="text-muted border">SP= {{$product->selling_price}}</span>@endif
+                        @if($product->boq_price)<span class="text-muted border col-12">BOQ= {{$product->boq_price}}</span>@endif
+                    </td>
+                    <td class="search_param_2" title="Old info: {{$product->old_info}}">
+                        @php $cat = str_replace('_', '-', $product->main_category)@endphp
+                        <span style="text-transform: capitalize">{{$cat}} @if(count($product->categories)) -> @endif</span><span hidden>{{$product->main_category}}</span> 
+                        @foreach ($product->categories as $item)
+                            @php $cat = str_replace('_', ' ', $item->category)@endphp
+                            <span style=""> *{{$cat}} </span><span hidden>{{$product->main_category}}</span> 
+                        @endforeach
                         {{-- The following is for the sake of searching based on description, it's hidden --}}
                         <span hidden> {{$product->notes}}</span>
                     </td>
-                    <td class="search_param_3">
+                    <td class="search_param_3" title="Old info: {{$product->old_info}}">
                         @if($product->light_requirement) 
                             @foreach($product->light_requirement as $req)
                             @php $light = str_replace('_', ' ', $req->requirement)@endphp
@@ -74,6 +83,18 @@
                             @endforeach
                         @endif
 
+                        {{-- The following is for the sake of searching based on garden type, it's hidden --}}
+                        @if($product->gardentype) 
+                            @foreach($product->gardentype as $gtype)
+                            @php $type = str_replace('_', ' ', $gtype->gardentype)@endphp
+                            <div class="" hidden>
+                                {{$gtype->gardentype}}, 
+                                
+                                <span >{{$type}}</span>
+                            </div>
+                            @endforeach
+                        @endif
+
                         @if(strlen($product->maintenance) > 0) 
                             <span> {{$product->maintenance}} maintenance,</span>
                         @endif
@@ -95,7 +116,7 @@
                     @endphp
                     <td class="search_param_4">
                         @foreach($prod_img as $img)
-                        <img src="{{asset('product_images/'.$img->image)}}" alt="none" class="" style="max-height:100px">
+                        <img src="{{asset('product_images/'.$img->image)}}" title="{{$img->caption}}" alt="none" class="" style="max-height:100px">
                         <span hidden>{{$img->caption}}</span>
                         @endforeach
                     </td>

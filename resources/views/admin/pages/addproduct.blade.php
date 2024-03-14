@@ -31,15 +31,17 @@
             <!-- Field -->
             <div class="col-md-6 field_item">
                 <div class="">
-                    <label for="" class="field_title">*Category</label>
-                    <select name="category" id="category" class="form-control">
-                        <option value="">None selected</option>
-                        @foreach($product_fp->category as $cat)
-                            <option value="{{$cat->db_name}}" @if(isset($product) && $product->category == $cat->db_name) selected='selected' @endif>{{$cat->display_name}}</option>
+                    <label for="" class="field_title">*Main Category</label>
+                    <select name="main_category" id="main_category" class="form-control">
+                        @foreach($product_fp->main_category as $cat)
+                            <option value="{{$cat->db_name}}" @if(isset($product) && $product->main_category == $cat->db_name) selected='selected' @endif>{{$cat->display_name}}</option>
                         @endforeach
                     </select>
                 </div>
             </div>
+
+            
+
 
             <!-- Field -->
             <div class="col-md-6 field_item border rounded p-2" title="Upload new image">
@@ -49,7 +51,7 @@
                         <div class="row mb-2">
                             @foreach($product->product_image as $img)
                             <div class="col-sm-6 col-lg-4 col-8 d-flex flex-column shadow-sm border p-2" id="{{$img}}">
-                                <div class="d-flex">
+                                <div class="d-flex flex-wrap">
                                     <span class="btn btn-dark py-0 me-auto" style="font-size:smaller" onclick="editCaption('{{$img->image}}', '{{$img->id}}', '{{$img->product_id}}', '{{$img->caption}}')">Edit caption</span>
                                     <span class="btn btn-dark py-0 ms-auto" style="font-size:smaller" onclick="removeImage('{{$img->image}}', '{{$img->id}}', '{{$img->product_id}}')">x</span>
                                 </div>
@@ -92,7 +94,7 @@
             <div class="col-md-6 field_item">
                 <div class="">
                     <label for="" class="field_title">Stocked quantity</label>
-                    <div class="d-flex">
+                    <div class="d-flex flex-wrap">
                         <input type="number" min="0" name="stocked_qty" class="no_border_rounded" @if(isset($product)) value="{{$product->stocked_qty}}" @endif>
                         <select name="stocked_qty_units" id="stocked_qty_units" class="">
                             <option value="no" @if(isset($product) && $product->stocked_qty_units == "no") selected='selected' @endif>No.</option>
@@ -108,7 +110,15 @@
             <div class="col-md-6 field_item">
                 <div class="">
                     <label for="" class="field_title">Notes</label>
-                    <textarea name="notes" id="notes" rows="3" class="form-control">@if(isset($product)) {!!$product->notes!!} @endif</textarea>
+                    <textarea name="notes" id="notes" rows="3" class="form-control">@if(isset($product)){!!$product->notes!!}@endif</textarea>
+                </div>
+            </div>
+
+            <!-- Field -->
+            <div class="col-md-6 field_item">
+                <div class="">
+                    <label for="" class="field_title">Old Info <i>(reserves any info of interest removed from main content)</i> </label>
+                    <textarea name="old_info" id="old_info" rows="3" class="form-control">@if(isset($product)){!!$product->old_info!!}@endif</textarea>
                 </div>
             </div>
 
@@ -127,7 +137,7 @@
             <div class="col-md-12 field_item">
                 <div class="">
                     <label for="" class="field_title">General Color (if not a plant)</label>
-                    <div class="d-flex">
+                    <div class="d-flex flex-wrap">
                         @foreach($product_fp->colors as $color)
 
                             @php
@@ -172,8 +182,38 @@
             <!-- Field -->
             <div class="col-md-12 field_item">
                 <div class="">
+                    <label for="" class="field_title">Categories</label>
+                    <div class="d-flex flex-wrap">
+                        @foreach($product_fp->category as $item)
+                            @php
+                                $checked = "";
+                            @endphp
+
+                            @if(isset($product))
+                            
+                                @php
+                                    foreach($product->categories as $db_cat){
+                                        if ($db_cat->category == $item->db_name){
+                                            $checked = "checked";  
+                                        }
+                                    }
+                                @endphp
+                            @endif
+
+                           
+                            <label class="border p-2 text-dark"><span>{{$item->display_name}}</span> 
+                                <input type="checkbox" value="{{$item->db_name}}" name="categories[]" class="no_border_rounded" @if ($checked == "checked") checked @endif >
+                            </label>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+
+            <!-- Field -->
+            <div class="col-md-12 field_item">
+                <div class="">
                     <label for="" class="field_title">Foliage color</label>
-                    <div class="d-flex">
+                    <div class="d-flex flex-wrap">
                         @foreach($product_fp->colors as $color)
 
                             @php
@@ -204,7 +244,7 @@
             <div class="col-md-12 field_item">
                 <div class="">
                     <label for="" class="field_title">Flower color</label>
-                    <div class="d-flex">
+                    <div class="d-flex flex-wrap">
                         @foreach($product_fp->colors as $color)
 
                             @php
@@ -245,6 +285,37 @@
             </div> -->
 
             <!-- Field -->
+            <div class="col-md-12 field_item">
+                <div class="">
+                    <label for="" class="field_title">Garden Type</label>
+                    <div class="d-flex flex-wrap">
+                        @foreach($product_fp->gardentype as $item)
+
+                            @php
+                                $checked = "";
+                            @endphp
+
+                            @if(isset($product))
+                            
+                                @php
+                                    foreach($product->gardentype as $db_type){
+                                        if ($db_type->gardentype == $item->db_name){
+                                            $checked = "checked";  
+                                        }
+                                    }
+                                @endphp
+                            @endif
+
+                           
+                            <label class="border p-2 text-dark"><span>{{$item->display_name}}</span> 
+                                <input type="checkbox" value="{{$item->db_name}}" name="gardentype[]" class="no_border_rounded" @if ($checked == "checked") checked @endif >
+                            </label>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+
+            <!-- Field -->
             <div class="col-md-6 field_item">
                 <div class="">
                     <label for="" class="field_title">Maintenance</label>
@@ -261,7 +332,7 @@
              <div class="col-md-6 field_item">
                 <div class="">
                     <label for="" class="field_title">Planting interval</label>
-                    <div class="d-flex">
+                    <div class="d-flex flex-wrap">
                             <input type="number" name="planting_interval" class="no_border_rounded" @if(isset($product)) value="{{$product->planting_interval}}" @endif>
                             <select name="planting_interval_units" id="planting_interval_units" class="">
                                 <option value="mm" @if(isset($product) && $product->planting_interval_units == "mm") selected='selected' @endif>mm</option>
@@ -276,7 +347,7 @@
             <div class="col-md-6 field_item">
                 <div class="">
                     <label for="" class="field_title">Mature spread</label>
-                    <div class="d-flex">
+                    <div class="d-flex flex-wrap">
                         <input type="number" name="mature_spread" class="no_border_rounded" @if(isset($product)) value="{{$product->mature_spread}}" @endif>
                         <select name="mature_spread_units" id="mature_spread_units" class="">
                             <option value="mm" @if(isset($product) && $product->mature_spread_units == "mm") selected='selected' @endif>mm</option>
@@ -291,7 +362,7 @@
             <div class="col-md-6 field_item">
                 <div class="">
                     <label for="" class="field_title">Mature height</label>
-                    <div class="d-flex">
+                    <div class="d-flex flex-wrap">
                         <input type="number" name="mature_height" class="no_border_rounded" @if(isset($product)) value="{{$product->mature_height}}" @endif>
                         <select name="mature_height_units" id="mature_height_units" class="">
                             <option value="mm" @if(isset($product) && $product->mature_height_units == "mm") selected='selected' @endif>mm</option>
@@ -306,7 +377,7 @@
              <div class="col-md-6 field_item">
                 <div class="">
                     <label for="" class="field_title">Light requirements</label>
-                    <div class="d-flex">
+                    <div class="d-flex flex-wrap">
                         @foreach($product_fp->light_requirements as $req)
 
                             @php

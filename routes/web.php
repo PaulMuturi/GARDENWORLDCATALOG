@@ -21,6 +21,7 @@ Route::post('/deleteproduct', 'App\Http\Controllers\admin\ProductController@dest
 Route::post('/deleteImg', 'App\Http\Controllers\admin\ProductController@deleteImg')->name('deleteImg');
 Route::post('/editCaption', 'App\Http\Controllers\admin\ProductController@editCaption')->name('editCaption');
 
+
 Route::get('/projects', 'App\Http\Controllers\admin\ProjectController@index')->name('projects');
 Route::get('/addproject', 'App\Http\Controllers\admin\ProjectController@create')->name('addProject');
 Route::post('/saveproject', 'App\Http\Controllers\admin\ProjectController@store')->name('saveProject');
@@ -40,3 +41,4 @@ Route::get('/editsection/{id}', 'App\Http\Controllers\admin\PaletteController@ed
 
 //WEB ROUTES
 Route::get('/showpalette/{id}', 'App\Http\Controllers\admin\PaletteController@showPalette')->name('showPalette');
+Route::get('/copy_category_to_newtable', 'App\Http\Controllers\admin\ProductController@showPalette');

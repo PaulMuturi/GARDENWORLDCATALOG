@@ -157,6 +157,7 @@ class PaletteController extends Controller
 
     public function saveSection(Request $request){
         $section;
+        return $request;
         if (isset($request->edit_id)){
             $section = Section::where('id', $request->edit_id)->first();
         }else{
@@ -203,7 +204,7 @@ class PaletteController extends Controller
         $project = Project::where('id', $palette->project_id)->first();
         $categorized_products = [];
 
-        $all_plants = Product::with('light_requirement')->with('foliage_color')->with('flower_color')->with('general_color')->with('product_image')->get();
+        $all_plants = Product::with('light_requirement')->with('foliage_color')->with('flower_color')->with('general_color')->with('categories')->with('product_image')->get();
         array_push($categorized_products, ['title' => "",'notes' => '', 'data' => $all_plants]);
 
         // UNCOMMENT FOR AUTO-CATEGORIZATION

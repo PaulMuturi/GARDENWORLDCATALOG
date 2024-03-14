@@ -33,4 +33,13 @@ class Product extends Model
     {
         return $this->hasMany(GeneralColor::class);
     }
+
+    public function gardentype()
+    {
+        return $this->hasMany(Gardentype::class);
+    }
+    public function categories()
+    {
+        return $this->hasMany(ProductCategory::class);
+    }
 }

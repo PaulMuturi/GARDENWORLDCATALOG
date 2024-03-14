@@ -18,13 +18,14 @@ return new class extends Migration
             $table->string('botanical_name')->nullable();
             $table->string('common_name')->nullable();
             $table->string('image')->nullable();
-            $table->string('category')->nullable();
+            $table->string('main_category')->nullable();
             $table->float('selling_price')->nullable();
             $table->float('max_discounted_price')->nullable();
             $table->float('boq_price')->nullable();
             $table->float('stocked_qty')->nullable();
             $table->string('stocked_qty_units')->nullable();
             $table->text('notes')->nullable();
+            $table->text('old_info')->nullable();
             $table->string('publish')->nullable();
             // $table->string('foliage_color')->nullable();
             // $table->string('flower_color')->nullable();

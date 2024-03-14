@@ -4,16 +4,16 @@ document.addEventListener('DOMContentLoaded', function () {
     searchInput.addEventListener('input', function () {
         var searchTerm = searchInput.value.toLowerCase();
         var allItems = document.querySelectorAll('.tr');
-
+        var search_param_1, search_param_2, search_param_3, search_param_4;
         allItems.forEach(function (item) {
             if (item.querySelector('.search_param_1'))
-                var search_param_1 = item.querySelector('.search_param_1').textContent.toLowerCase();
+                search_param_1 = item.querySelector('.search_param_1').textContent.toLowerCase();
             if (item.querySelector('.search_param_2'))
-                var search_param_2 = item.querySelector('.search_param_2').textContent.toLowerCase();
+                search_param_2 = item.querySelector('.search_param_2').textContent.toLowerCase();
             if (item.querySelector('.search_param_3'))
-                var search_param_3 = item.querySelector('.search_param_3').textContent.toLowerCase();
+                search_param_3 = item.querySelector('.search_param_3').textContent.toLowerCase();
             if (item.querySelector('.search_param_4'))
-                var search_param_4 = item.querySelector('.search_param_4').textContent.toLowerCase();
+                search_param_4 = item.querySelector('.search_param_4').textContent.toLowerCase();
             
             // Add more selectors for other properties you want to search
 

@@ -4,7 +4,7 @@
     <section class="container">
         <h2 class="text-success">@if(isset($sectionData))EDIT @else ADD @endif SECTION</h2>
        
-        <form action="{{route('saveSection')}}" method="POST" class=" p-2" enctype="multipart/form-data">
+        <form action="{{route('saveSection')}}" id="page_top" method="POST" class=" p-2" enctype="multipart/form-data">
             <div class=" d-flex shadow-sm p-2">
                 <a class="btn btn-light text-muted" style="font-size:smaller" href="{{route('editPalette', $palette->id)}}">[Back]</a>
             </div>
@@ -38,10 +38,18 @@
                         <textarea name="notes" id="notes" rows="3" class="form-control">@if(isset($sectionData)) {!!$sectionData->notes!!} @endif</textarea>
                     </div>
                 </div>
+
+                <div>
+                    <a href="#selection_panel" class="btn border my-2">Make Selection</a>
+                    <h4 class="text-success">Current choices</h4>
+                    <ol id="current_choices" class="text-muted"></ol>
+                </div>
             </div>
 
+
             {{-- Selection of products below --}}
-            <div class="mt-5 p-4 border">
+            <div class="mt-5 p-4 border" id="selection_panel">
+                <a href="#page_top" class="btn border my-2">View current selection</a>
                 {{-- Search area head --}}
                 <div class="row shadow-sm rounded bg-success">
                     <div class="col-6 m-auto">
@@ -54,7 +62,7 @@
                     </div>
                 </div>
 
-                <div class=""  style="height:60vh; overflow:scroll">
+                <div class=""  style="height:50vh; overflow:scroll">
                     <table class="table table-striped shadow-sm p-2 my-3">
                         @php 
                             $choices = [];
@@ -74,12 +82,19 @@
                                             $checked = '';
                                             foreach ($choices as $choice) {
                                                 $choice = explode('_', $choice);
+                                                $choice_count = count($choice);
+                                                $qty = 0;
+                                                $rate = 0;
 
-                                                if (count($choice)  < 2){
+                                                if ($choice_count  < 2){
                                                     break;
                                                 }
                                                 $prod_id = $choice[0];
                                                 $img_id = $choice[1];
+                                                if ($choice_count == 4){
+                                                    $qty = $choice[2];
+                                                    $rate = $choice[3];
+                                                }
 
                                                 if ($product->id == $prod_id && $img->id == $img_id){
                                                     $checked = 'checked';
@@ -87,6 +102,27 @@
                                                 }
                                             }
                                         @endphp
+                                        @if ($checked)
+                                        {{-- Dynamically add list element to current choices --}}
+                                            <script>
+                                                var ul = document.getElementById('current_choices');
+                                                var li = document.createElement('li');
+                                                var bname =@json($product->botanical_name);
+                                                var cname =@json($product->common_name);
+                                                var capt = @json($img->caption);
+                                                var j_qty = @json($qty);
+                                                var j_rate = @json($rate);
+                                                var capt_sep = '-';
+                                                var first_brkt = '(';
+                                                var second_brkt = ')'
+                                                if (bname == null){bname = ""};
+                                                if (cname == null){cname = ""; first_brkt = ''; second_brkt = ''};
+                                                if (capt == null){capt = ""; capt_sep = ''};
+                                                var val = `${bname} ${first_brkt}${cname}${second_brkt} ${capt_sep} ${capt}  [ qty: ${j_qty} @ ${j_rate} => Ksh: ${j_qty * j_rate} ]`;
+                                                li.appendChild(document.createTextNode(val));
+                                                ul.appendChild(li);
+                                            </script>
+                                        @endif
                                         <label>
                                             {{-- Format value: product_id, image_id separated by underscore(_) --}}
                                             <input type="checkbox" {{$checked}} value="{{$product->id}}_{{$img->id}}" class="mx-2" name="choice[]" style="transform: scale(2)">
@@ -94,6 +130,7 @@
                                         </label>
                                     </td>
                                     <td class="search_param_2">
+                                        
                                         @php $cat = str_replace('_', ' ', $product->category)@endphp
                                         {{$cat}} <span hidden>{{$product->category}}</span> 
                                         {{-- The following is for the sake of searching based on description, it's hidden --}}
@@ -128,6 +165,26 @@
                                         @if(strlen($product->water_requirements) > 0) 
                                             <span> {{$product->water_requirements}} watering</span>
                                         @endif
+
+                                        {{-- The following is for the sake of searching based on garden type, it's hidden --}}
+                                        @if($product->gardentype) 
+                                        @foreach($product->gardentype as $gtype)
+                                        @php $type = str_replace('_', ' ', $gtype->gardentype)@endphp
+                                        <div class="" hidden>
+                                            {{$gtype->gardentype}}, 
+                                            
+                                            <span >{{$type}}</span>
+                                        </div>
+                                        @endforeach
+                                    @endif
+                                    </td>
+                                    <td class="">
+                                        <div class="d-flex">
+                                            Qty. <input class="rounded border text-center" value="{{$qty}}" type="number" disabled>
+                                        </div>
+                                        <div class="d-flex">
+                                            Rate <input class="rounded border text-center" value="{{$rate}}" type="number" disabled>
+                                        </div>
                                     </td>
                                     {{-- <td style="font-style:italic">@if($product->publish == 'yes')<span class="text-muted">published</span> @else <span class="text-danger">not_published</span> @endif</td> --}}                                
                                     <td class="search_param_4">
