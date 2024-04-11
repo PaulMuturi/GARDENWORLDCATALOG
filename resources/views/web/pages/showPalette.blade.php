@@ -8,8 +8,9 @@
             @if ($project->title)<p class=""><span class="text-warning text-bold">Project: </span><span class="lead" style="text-transform: uppercase">{{$project->title}}</span></p>@endif
             @if ($project->client)<p class=""><span class="text-warning text-bold">Client: </span><span class="lead" style="text-transform: uppercase">{{$project->client}}</span></p>@endif
             @if ($project->scope)<p class=""><span class="text-warning text-bold">Scope: </span><span class="lead" style="text-transform: uppercase">{{$project->scope}}</span></p>@endif
-            <p class=""><span class="text-warning text-bold">Landscape Consultant/Contractor: </span><span class="lead" style="text-transform: uppercase">NIFTYPALM DESIGNS</span></p>
-            
+            {{-- <p class=""><span class="text-warning text-bold">Landscape Consultant/Contractor: </span><span class="lead" style="text-transform: uppercase">NIFTYPALM DESIGNS</span></p> --}}
+            <p class=""><span class="text-warning text-bold">Landscape Consultant/Contractor: </span><span class="lead" style="text-transform: uppercase">NAIROBI BOTANICA GARDENING LTD</span></p>
+
             @if ($palette->notes)<p class="me-auto text-smaller"><span class="text-warning text-bold"></span><span class="" style="white-space: pre-wrap">{!!$palette->notes!!}</span></p>@endif
         </div>
         {{-- <hr> --}}
@@ -70,7 +71,7 @@
                                                     <span class="{{$cat_product->title}}" hidden></span>
                                                     {{-- Show the image and its info --}}
                                                     <div class="m-auto  rounded mx-1 my-1 p-1 d-flex flex-column" style="max-width:250px;">
-                                                        <img src="{{asset('product_images/'.$img->image)}}" alt="" class="mx-auto" style="max-height: 210px; max-width:240px" title="{{$product->notes}}">
+                                                        <img src="{{asset('product_images/'.$img->image)}}" alt="" class="mx-auto" style="max-height: 210px; max-width:240px" title="SP: {{$product->selling_price}}, BOQ: {{$product->boq_price}}, NOTES: {{$product->notes}}">
                                                         <div class=" p-1 text-center">
                                                             @if ($img->caption)<span class="text-muted text-italic m-auto text-smaller" style="text-transform: capitalize">{{$img->caption}}</span> <br>@endif
                                                             <span class="text-success">

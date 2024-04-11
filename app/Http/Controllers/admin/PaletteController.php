@@ -157,7 +157,6 @@ class PaletteController extends Controller
 
     public function saveSection(Request $request){
         $section;
-        return $request;
         if (isset($request->edit_id)){
             $section = Section::where('id', $request->edit_id)->first();
         }else{

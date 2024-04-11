@@ -110,15 +110,16 @@
                                                 var bname =@json($product->botanical_name);
                                                 var cname =@json($product->common_name);
                                                 var capt = @json($img->caption);
-                                                var j_qty = @json($qty);
-                                                var j_rate = @json($rate);
+                                                // var j_qty = @json($qty);
+                                                // var j_rate = @json($rate);
                                                 var capt_sep = '-';
                                                 var first_brkt = '(';
                                                 var second_brkt = ')'
                                                 if (bname == null){bname = ""};
                                                 if (cname == null){cname = ""; first_brkt = ''; second_brkt = ''};
                                                 if (capt == null){capt = ""; capt_sep = ''};
-                                                var val = `${bname} ${first_brkt}${cname}${second_brkt} ${capt_sep} ${capt}  [ qty: ${j_qty} @ ${j_rate} => Ksh: ${j_qty * j_rate} ]`;
+                                                var val = `${bname} ${first_brkt}${cname}${second_brkt} ${capt_sep} ${capt}`;
+                                                // var val = `${bname} ${first_brkt}${cname}${second_brkt} ${capt_sep} ${capt}  [ qty: ${j_qty} @ ${j_rate} => Ksh: ${j_qty * j_rate} ]`;
                                                 li.appendChild(document.createTextNode(val));
                                                 ul.appendChild(li);
                                             </script>
@@ -178,14 +179,14 @@
                                         @endforeach
                                     @endif
                                     </td>
-                                    <td class="">
+                                    {{-- <td class="">
                                         <div class="d-flex">
                                             Qty. <input class="rounded border text-center" value="{{$qty}}" type="number" disabled>
                                         </div>
                                         <div class="d-flex">
                                             Rate <input class="rounded border text-center" value="{{$rate}}" type="number" disabled>
                                         </div>
-                                    </td>
+                                    </td> --}}
                                     {{-- <td style="font-style:italic">@if($product->publish == 'yes')<span class="text-muted">published</span> @else <span class="text-danger">not_published</span> @endif</td> --}}                                
                                     <td class="search_param_4">
                                         <img src="{{asset('product_images/'.$img->image)}}" alt="none" class="" style="max-height:100px">
