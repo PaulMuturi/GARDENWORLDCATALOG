@@ -30,7 +30,7 @@
              <div class="col-md-6 field_item m-auto">
                 <div class="">
                     <label for="" class="field_title">Notes</label>
-                    <textarea name="notes" id="notes" rows="3" class="form-control">@if(isset($palette)) {!!$palette->notes!!} @endif</textarea>
+                    <textarea name="notes" id="notes" rows="3" class="form-control">@if(isset($palette)){!!$palette->notes!!} @endif</textarea>
                 </div>
             </div>
 

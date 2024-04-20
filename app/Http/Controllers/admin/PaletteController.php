@@ -245,7 +245,8 @@ class PaletteController extends Controller
         */
 
         $categorized_products = json_decode(json_encode($categorized_products));
-        // return $categorized_products;
+        // return $palette;
+;
         return view('web.pages.showPalette', compact('palette', 'project', 'categorized_products'));
     }
 }

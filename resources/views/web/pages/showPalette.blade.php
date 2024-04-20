@@ -10,8 +10,8 @@
             @if ($project->scope)<p class=""><span class="text-warning text-bold">Scope: </span><span class="lead" style="text-transform: uppercase">{{$project->scope}}</span></p>@endif
             {{-- <p class=""><span class="text-warning text-bold">Landscape Consultant/Contractor: </span><span class="lead" style="text-transform: uppercase">NIFTYPALM DESIGNS</span></p> --}}
             <p class=""><span class="text-warning text-bold">Landscape Consultant/Contractor: </span><span class="lead" style="text-transform: uppercase">NAIROBI BOTANICA GARDENING LTD</span></p>
-
-            @if ($palette->notes)<p class="me-auto text-smaller"><span class="text-warning text-bold"></span><span class="" style="white-space: pre-wrap">{!!$palette->notes!!}</span></p>@endif
+            
+            @if ($palette->notes)<p class="me-auto text-success text-bold"><span class="text-warning text-bold"></span><span class="" style="white-space: pre-wrap">{!!$palette->notes!!}</span></p>@endif
         </div>
         {{-- <hr> --}}
         <div class="sections_area">
