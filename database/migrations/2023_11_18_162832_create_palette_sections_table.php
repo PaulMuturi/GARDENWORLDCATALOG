@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('palette_sections', function (Blueprint $table) {
             $table->integer('section_id')->nullable();
+            $table->integer('palette_id')->nullable();
             $table->integer('product_id')->nullable();
             $table->integer('img_id')->nullable();
             $table->float('qty')->nullable();
