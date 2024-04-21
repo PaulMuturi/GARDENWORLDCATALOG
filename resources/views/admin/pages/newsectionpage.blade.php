@@ -1,6 +1,9 @@
 @extends('admin.app')
 
 @section('main-content')
+    @php
+        $totals = 0;
+    @endphp
     <section class="container">
         <h2 class="text-success">@if(isset($sectionData))EDIT @else ADD @endif SECTION</h2>
        
@@ -65,44 +68,59 @@
                 <div class=""  style="height:50vh; overflow:scroll">
                     <table class="table table-striped shadow-sm p-2 my-3">
                         @php 
-                            $choices = [];
+                            // $choices = [];
                             $item_count = 0;
-                            if (isset($sectionData)){
-                                $choices = explode(',', $sectionData->image_ids);
-                            }
+                            
+                            // if (isset($sectionData)){
+                            //     $choices = explode(',', $sectionData->image_ids);
+                            // }
                         @endphp
                         @foreach($products as $product)
+                            @php
+                               
+                            @endphp
                             @foreach ($product->product_image as $img)  
-                                @php $item_count++;@endphp   
+                                @php 
+                                    $item_count++;
+                                   
+                                @endphp   
                                 <tr class="text-muted tr" style="font-size:">
                                     {{-- <td>{{$item_count}}</td> --}}
 
                                     <td class="search_param_1 text-dark"  style="font-size:normal">
                                         @php
                                             $checked = '';
-                                            foreach ($choices as $choice) {
-                                                $choice = explode('_', $choice);
-                                                $choice_count = count($choice);
-                                                $qty = 0;
-                                                $rate = 0;
-
-                                                if ($choice_count  < 2){
-                                                    break;
+                                            
+                                            if (isset($selection)){
+                                                foreach ($selection as $choice) {                                                
+                                                    $prod_id = $choice->product_id;
+                                                    $img_id = $choice->img_id;
+                                                    $rate = $choice->new_rate;
+                                                    $order = $choice->order;
+                                                    $comment = $choice->comment;                                              
+    
+                                                    $qty = $choice->qty;
+    
+                                                    if (!$qty){$qty = 0;}
+                                                    if (!$rate){$rate = 0;}                                                
+    
+                                                    if ($product->id == $prod_id && $img->id == $img_id){
+                                                        $checked = 'checked';
+                                                        break;
+                                                    }
                                                 }
-                                                $prod_id = $choice[0];
-                                                $img_id = $choice[1];
-                                                if ($choice_count == 4){
-                                                    $qty = $choice[2];
-                                                    $rate = $choice[3];
-                                                }
-
-                                                if ($product->id == $prod_id && $img->id == $img_id){
-                                                    $checked = 'checked';
-                                                    break;
-                                                }
-                                            }
+                                            }                                     
                                         @endphp
                                         @if ($checked)
+                                            @php      
+                                                if (!$rate){
+                                                    $rate = $product->boq_price;
+                                                }
+                                                if (!$rate){
+                                                    $rate = $product->selling_price;
+                                                }
+                                                $totals = $totals + ($rate * $qty);
+                                            @endphp
                                         {{-- Dynamically add list element to current choices --}}
                                             <script>
                                                 var ul = document.getElementById('current_choices');
@@ -110,6 +128,9 @@
                                                 var bname =@json($product->botanical_name);
                                                 var cname =@json($product->common_name);
                                                 var capt = @json($img->caption);
+                                                var rate = @json($rate);
+                                                var qty = @json($qty);
+                                                var subtot = rate * qty;
                                                 // var j_qty = @json($qty);
                                                 // var j_rate = @json($rate);
                                                 var capt_sep = '-';
@@ -118,20 +139,33 @@
                                                 if (bname == null){bname = ""};
                                                 if (cname == null){cname = ""; first_brkt = ''; second_brkt = ''};
                                                 if (capt == null){capt = ""; capt_sep = ''};
-                                                var val = `${bname} ${first_brkt}${cname}${second_brkt} ${capt_sep} ${capt}`;
+                                                var val = `${bname} ${first_brkt}${cname}${second_brkt} ${capt_sep} ${capt} ::: [ ${qty} @ ${rate} = ${subtot.toLocaleString()} ]`;
                                                 // var val = `${bname} ${first_brkt}${cname}${second_brkt} ${capt_sep} ${capt}  [ qty: ${j_qty} @ ${j_rate} => Ksh: ${j_qty * j_rate} ]`;
                                                 li.appendChild(document.createTextNode(val));
                                                 ul.appendChild(li);
                                             </script>
+                                        @else
+                                            @php
+                                                $qty = 0;
+                                                $rate = 0;
+                                                if (!$rate){
+                                                    $rate = $product->boq_price;
+                                                }
+                                                if (!$rate){
+                                                    $rate = $product->selling_price;
+                                                }
+                                                $order = 0;
+                                                $comment = '';
+                                            @endphp
                                         @endif
+
                                         <label>
                                             {{-- Format value: product_id, image_id separated by underscore(_) --}}
-                                            <input type="checkbox" {{$checked}} value="{{$product->id}}_{{$img->id}}" class="mx-2" name="choice[]" style="transform: scale(2)">
+                                            <input type="checkbox" {{$checked}} value="{{$product->id}}_{{$img->id}}_{{$qty}}_{{$rate}}_{{$order}}_{{$comment}}" id="{{$product->id}}_{{$img->id}}" class="mx-2" name="choice[]" style="transform: scale(2)">
                                             <span class=""> @if($product->botanical_name){{$product->botanical_name}}@endif @if($product->common_name)({{$product->common_name}})@endif</span>
                                         </label>
                                     </td>
-                                    <td class="search_param_2">
-                                        
+                                    <td class="search_param_2">                                        
                                         @php $cat = str_replace('_', ' ', $product->category)@endphp
                                         {{$cat}} <span hidden>{{$product->category}}</span> 
                                         {{-- The following is for the sake of searching based on description, it's hidden --}}
@@ -188,6 +222,16 @@
                                         </div>
                                     </td> --}}
                                     {{-- <td style="font-style:italic">@if($product->publish == 'yes')<span class="text-muted">published</span> @else <span class="text-danger">not_published</span> @endif</td> --}}                                
+                                    <td class="">
+                                        <input class="border text-center" type="number" value="{{$qty}}" id="qty-{{$product->id}}_{{$img->id}}"  onblur="updateValue(event, 'qty')" placeholder="qty">
+                                        <p class="text-success text-small text-center  py-0 my-0">qty & rate</p>
+                                        <input class="border text-center" type="number" value="{{$rate}}" id="rate-{{$product->id}}_{{$img->id}}" onblur="updateValue(event, 'rate')"  placeholder="rate">
+                                    </td>
+                                    <td class="">
+                                        <input class="border text-center" type="number" value="{{$order}}" id="order-{{$product->id}}_{{$img->id}}" onblur="updateValue(event, 'order')"  placeholder="order">
+                                        <p class="text-success text-small text-center py-0 my-0">order & comment</p>
+                                        <input class="border text-center" type="text" value="{{$comment}}" id="comment-{{$product->id}}_{{$img->id}}"  onblur="updateValue(event, 'comment')" placeholder="comment">
+                                    </td>
                                     <td class="search_param_4">
                                         <img src="{{asset('product_images/'.$img->image)}}" alt="none" class="" style="max-height:100px">
                                         <br><span class="text-muted text-smaller text-italic">{{$img->caption}}</span>
@@ -195,6 +239,21 @@
                                 </tr>
                             @endforeach
                         @endforeach
+
+                        {{-- ADD TOTALS --}}
+                        <script>
+                            var ch = document.getElementById('current_choices');
+                            var heading = document.createElement('h5');
+                            var hr = document.createElement('hr');
+                            var totals = @json($totals);
+                           
+                           
+                            var val = `TOTALS: = ${totals.toLocaleString()}`;
+                            // var val = `${bname} ${first_brkt}${cname}${second_brkt} ${capt_sep} ${capt}  [ qty: ${j_qty} @ ${j_rate} => Ksh: ${j_qty * j_rate} ]`;
+                            heading.appendChild(document.createTextNode(val));
+                            ch.appendChild(hr);
+                            ch.appendChild(heading);
+                        </script>
                     </table>
                 </div>
             </div>
@@ -249,6 +308,47 @@
 
                 document.getElementById('edit_caption_form').submit();
             }
+        }
+    </script>
+
+    <script>
+        const updateValue = (e, itemtype) => {
+            var val = e.target.value;
+            
+            var id = event.target.id.split('-')[1];
+            //Get checkbox with similar id
+            var checkval = document.getElementById(id);
+            //output should be a string of numbers separated by dashes, ie, 1_1_1_1 (product_id, img_id, qty, rate)
+            checkarr = checkval.value.split('_');
+            
+            if (itemtype == 'rate'){
+                checkarr[3] = val;
+                checkarr[2] = document.getElementById(`qty-${id}`).value;
+                checkarr[4] = document.getElementById(`order-${id}`).value
+                checkarr[5] = document.getElementById(`comment-${id}`).value
+            }
+            if (itemtype == 'qty'){
+                checkarr[2] = val;
+                checkarr[3] = document.getElementById(`rate-${id}`).value;
+                checkarr[4] = document.getElementById(`order-${id}`).value
+                checkarr[5] = document.getElementById(`comment-${id}`).value
+            }
+            if (itemtype == 'order'){
+                checkarr[4] = val;
+                checkarr[2] = document.getElementById(`qty-${id}`).value;
+                checkarr[3] = document.getElementById(`rate-${id}`).value;
+                checkarr[5] = document.getElementById(`comment-${id}`).value
+
+                
+            }
+            if (itemtype == 'comment'){
+                checkarr[5] = val;
+                checkarr[2] = document.getElementById(`qty-${id}`).value;
+                checkarr[3] = document.getElementById(`rate-${id}`).value;
+                checkarr[4] = document.getElementById(`order-${id}`).value
+            }
+            joinedcheck = checkarr.join('_');
+            checkval.value = joinedcheck;
         }
     </script>
 

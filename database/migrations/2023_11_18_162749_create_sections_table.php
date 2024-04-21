@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('title')->nullable();
             $table->text('notes')->nullable();
+            $table->float('order')->nullable();
             $table->integer('palette_id')->nullable();
             $table->text('image_ids')->nullable();
             // $table->integer('product_id')->nullable();

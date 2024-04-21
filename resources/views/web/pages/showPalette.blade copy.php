@@ -15,53 +15,60 @@
         </div>
         {{-- <hr> --}}
         <div class="sections_area">
-            @foreach ($sections as $section)
+            @foreach ($palette->sections as $section)
                 {{-- <hr class="container text-success" style=""> --}}
                 <div class="my-2">  
                     <div class="d-flex flex-wrap w-100 p-1 px-4 text-success shadow-sm" style="border-top: solid .1px grey">
                         <h3 class="m-auto text-center text-bold container">{{strtoupper($section->title)}} : </h3>
                         <p class="text-smaller m-auto container text-center"> {!!$section->notes!!}</p>
                     </div>  
-                   
-                    <div class="d-flex" >                        
-                        <div class="m-auto py-1 d-flex flex-wrap w-100" style="justify-content:center">
-                        {{-- check if categroy has any data --}}
+                    @php
+                        $choices = explode(',', $section->image_ids);
+                    @endphp
 
-                        @php
-                            $iscat = false;
-                            // foreach ($cat_order as $cat_item){
-                                foreach ($all_products as $product) {
+                    <div class="d-flex" >
+                        
+                        @foreach ($categorized_products as $cat_product)
+                        <div class="m-auto py-1 d-flex flex-wrap w-100" style="justify-content:center">
+                            {{-- check if categroy has any data --}}
+
+                            @php
+                                $iscat = false;
+                                foreach ($cat_product->data as $product) {
                                     foreach ($product->product_image as $img){
-                                        foreach ($section->palette_sections as $choice){  
-                                            $prod_id = $choice->product_id;                                    
-                                            $img_id = $choice->img_id;
-                                            $ct = $choice->override_category;
+                                        foreach ($choices as $choice){
+                                            $choice = explode('_', $choice);
+                                            $choice_count = count($choice);
+                                            if ($choice_count > 0)
+                                                $prod_id = $choice[0];
+                                            if ($choice_count > 1)
+                                                $img_id = $choice[1];
+                                            
                                             if ($prod_id == $product->id && $img_id == $img->id){
                                                 $iscat = true;
-                                                break;
                                             }
                                         }
                                     }
                                 }
-                            // }
-                        @endphp
-                        @if ($iscat)
-                            {{-- UNCOMMENT IF AUTO-CATEGORIZATION --}}
-                            {{-- <div class="text-center shadow-sm d-flex px-3 my-auto" id="{{$cat_product->title}}" style="max-height:200px; max-width:250px" >
-                                <h5 class="me-auto text-success m-auto p-3" ><span class="text-underline">{{$cat_product->title}}</span>@if($cat_product->notes) <br><span class="text-smaller lead">{{$cat_product->notes}}</span>@endif </h5>
-                            </div> --}}
-                                {{-- Loop through images of a product --}}
-                                @foreach ($cat_order as $cat_item)   
-                                    @foreach ($all_products as $product)                               
+                            @endphp
+
+                            @if ($iscat)
+                                {{-- UNCOMMENT IF AUTO-CATEGORIZATION --}}
+                                {{-- <div class="text-center shadow-sm d-flex px-3 my-auto" id="{{$cat_product->title}}" style="max-height:200px; max-width:250px" >
+                                    <h5 class="me-auto text-success m-auto p-3" ><span class="text-underline">{{$cat_product->title}}</span>@if($cat_product->notes) <br><span class="text-smaller lead">{{$cat_product->notes}}</span>@endif </h5>
+                                </div> --}}
+                                    {{-- Loop through images of a product --}}
+                                    @foreach ($cat_product->data as $product)                               
                                         @foreach ($product->product_image as $img)
                                             {{-- Compare each of the choices with plants in database and display if a match --}}
-                                            @foreach ($section->palette_sections as $choice)
+                                            @foreach ($choices as $choice)
                                                 @php
-                                                    $prod_id = $choice->product_id;                                    
-                                                    $img_id = $choice->img_id;
-                                                    $ct = $choice->override_category;
+                                                    $choice = explode('_', $choice);
+                                                    $prod_id = $choice[0];
+                                                    $img_id = $choice[1];
                                                 @endphp
-                                                @if ($prod_id == $product->id && $img_id == $img->id && $cat_item == $ct)
+                                                @if ($prod_id == $product->id && $img_id == $img->id)
+                                                    <span class="{{$cat_product->title}}" hidden></span>
                                                     {{-- Show the image and its info --}}
                                                     <div class="m-auto  rounded mx-1 my-1 p-1 d-flex flex-column" style="max-width:250px;">
                                                         <img src="{{asset('product_images/'.$img->image)}}" alt="" class="mx-auto" style="max-height: 210px; max-width:240px" title="SP: {{$product->selling_price}}, BOQ: {{$product->boq_price}}, NOTES: {{$product->notes}}">
@@ -86,15 +93,15 @@
                                                                     <span class="text-muted" style="text-transform:capitalize"> @foreach($product->light_requirement as $req)@if($loop->index > 0),@endif {{$req->requirement}}@endforeach</span>
                                                                 </span>
                                                             @endif
-                                                                                            
+                                                                                           
                                                         </div>
                                                     </div>
                                                 @endif
                                             @endforeach
                                         @endforeach
                                     @endforeach
-                                @endforeach
-                            @endif
+                                @endif
+                            @endforeach
                         </div>
                     </div>
                 </div>

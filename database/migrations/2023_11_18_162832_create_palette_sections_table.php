@@ -14,10 +14,19 @@ return new class extends Migration
     public function up()
     {
         Schema::create('palette_sections', function (Blueprint $table) {
-            $table->id();
-            $table->integer('palette_id')->nullable();
             $table->integer('section_id')->nullable();
+            $table->integer('product_id')->nullable();
+            $table->integer('img_id')->nullable();
+            $table->float('qty')->nullable();
+            $table->string('unit')->nullable();
+            $table->float('new_rate')->nullable();
+            $table->float('order')->nullable();
+            $table->string('comment')->nullable();
+            $table->string('override_category')->nullable();
             $table->timestamps();
+
+            // Define composite primary key
+            $table->primary(['section_id', 'img_id']);
         });
     }
 

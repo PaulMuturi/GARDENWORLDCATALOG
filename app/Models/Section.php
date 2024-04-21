@@ -12,4 +12,8 @@ class Section extends Model
     public function palette(){
         return $this->belongsTo(Palette::class);
     }
+
+    public function paletteSections(){
+        return $this->hasMany(PaletteSection::class);
+    }
 }
