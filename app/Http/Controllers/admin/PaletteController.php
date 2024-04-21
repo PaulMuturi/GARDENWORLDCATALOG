@@ -178,7 +178,17 @@ class PaletteController extends Controller
                 $img_id = $ch_arr[1];
                 $qty = $ch_arr[2];
                 if (!$qty){$qty = 0;}
+
                 $rate = $ch_arr[3];
+                //If first time saving the section pick the data from other sections if exists
+                if (!isset($request->edit_id)){
+                    //get value from previously set if exists
+                    $rate_all = $this->getRateForAll($request->palette_id, $product_id, $img_id);
+                    if ($rate_all){
+                        $rate = $rate_all;
+                    }                                       
+                }
+
                 if (!$rate){$rate = 0;}
                 $order = $ch_arr[4];
                 if (!$order){$order = 0;}
@@ -187,10 +197,12 @@ class PaletteController extends Controller
 
                 $pal_sect = new PaletteSection();
                 $pal_sect->section_id = $section->id;
+                $pal_sect->palette_id = $request->palette_id;
                 $pal_sect->product_id = $product_id;
                 $pal_sect->img_id = $img_id;
                 $pal_sect->qty = $qty;
                 $pal_sect->new_rate = $rate;
+                $this->setRateForAll($request->palette_id, $product_id, $img_id, $rate);
                 $pal_sect->order = $order;
                 $pal_sect->comment = $comment;
                 $cat = $this->categorizeProduct($product_id);
@@ -206,6 +218,22 @@ class PaletteController extends Controller
         // $section->image_ids = $images;
 
         return redirect(route('editSection', $section->id));
+    }
+
+    public function getRateForAll($palette_id, $product_id, $img_id){
+        $all_entries = PaletteSection::where('palette_id', $palette_id)->where('product_id', $product_id)->where('img_id', $img_id)->get();
+        if ($all_entries){
+            foreach($all_entries as $entry){
+                if ($entry->new_rate){
+                    return ($entry->new_rate);
+                }
+            }
+        }
+        return 0;
+    }
+
+    public function setRateForAll($palette_id, $product_id, $img_id, $rate){
+        $all_entries = PaletteSection::where('palette_id', $palette_id)->where('product_id', $product_id)->where('img_id', $img_id)->update(['new_rate' => $rate]);
     }
 
     public function editSection($id){
@@ -297,6 +325,7 @@ class PaletteController extends Controller
             //                 $cat = $this->categorizeProduct($prod_id);
             //                 $pal_sect = new PaletteSection();
             //                 $pal_sect->section_id = $section->id;
+            //                 $pal_sect->palette_id = $section->palette_id;
             //                 $pal_sect->product_id = $prod_id;
             //                 $pal_sect->img_id = $img_id;
             //                 $pal_sect->override_category = $cat;

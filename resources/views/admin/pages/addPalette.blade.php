@@ -24,7 +24,7 @@
                     <select name="project_id" id="project_id" class="form-control m-auto" required>
                         <option value="">select project</option>
                         @foreach($projects as $project)
-                            <option @if (isset($palette) && $palette->project_id == $project->id) selected id="enable" @endif @if (isset($projects_with_palette) && in_array($project->id, $projects_with_palette)) disabled @endif value="{{$project->id}}">{{$project->title}} @if($project->client)({{$project->client}})@endif</option>
+                            <option @if (isset($palette) && $palette->project_id == $project->id) selected id="enable" @endif @if (isset($projects_with_palette) && in_array($project->id, $projects_with_palette)) disabled hidden @endif value="{{$project->id}}">{{$project->title}} @if($project->client)({{$project->client}})@endif</option>
                         @endforeach
                     </select>
                 </div>
@@ -57,7 +57,7 @@
                 <div class="m-auto">
                     <span class="btn btn-success m-auto border" onclick="addSection({{$palette_id}})">Add Section</span>
                 </div>
-                <p class="m-auto text-light"><span class="muted">Grand total: </span> <span id="grandtotal"></span></p>
+                <p class="m-auto text-light"><span class="muted">Grand total: Ksh  </span> <span id="grandtotal"></span></p>
             </div>
 
             @if (isset($palette))
