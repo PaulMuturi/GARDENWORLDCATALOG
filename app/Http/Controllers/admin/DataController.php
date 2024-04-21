@@ -152,23 +152,14 @@ class DataController extends Controller
                 [
                     'display_name' => 'Grass',
                     'db_name' => 'grass',
-                    'parent' => 'Groundcover'
+                    'parent' => 'Groundcovers'
                 ],
                 [
                     'display_name' => 'Groundcover',
                     'db_name' => 'groundcover',
                     'parent' => 'Groundcovers'
                 ],
-                [
-                    'display_name' => 'Herbaceous plant',
-                    'db_name' => 'herbaceous_plant',
-                    'parent' => 'Herbaceous plant'
-                ],
-                [
-                    'display_name' => 'Foliage plant',
-                    'db_name' => 'foliage_plant',
-                    'parent' => 'Foliage plant'
-                ],
+                
                 [
                     'display_name' => 'Short shrub',
                     'db_name' => 'short_shrub',
@@ -190,10 +181,31 @@ class DataController extends Controller
                     'parent' => 'Palms'
                 ],
                 [
-                    'display_name' => 'Fern',
-                    'db_name' => 'fern',
-                    'parent' => 'Foliage plants'
+                    'display_name' => 'Palm-Like',
+                    'db_name' => 'palmlike',
+                    'parent' => 'Palms'
                 ],
+                [
+                    'display_name' => 'Fruit',
+                    'db_name' => 'fruit',
+                    'parent' => 'Fruits'
+                ],
+                [
+                    'display_name' => 'Fruit tree',
+                    'db_name' => 'fruit_tree',
+                    'parent' => 'Fruit_Trees'
+                ],
+                [
+                    'display_name' => 'Succulent',
+                    'db_name' => 'succulent',
+                    'parent' => 'Succulents'
+                ],
+                [
+                    'display_name' => 'Climber',
+                    'db_name' => 'climber',
+                    'parent' => 'Groundcovers'
+                ],
+                
                 [
                     'display_name' => 'Tree',
                     'db_name' => 'tree',
@@ -205,31 +217,28 @@ class DataController extends Controller
                     'parent' => 'Trees'
                 ],
                 [
-                    'display_name' => 'Fruit',
-                    'db_name' => 'fruit',
-                    'parent' => 'Fruit'
+                    'display_name' => 'Foliage plant',
+                    'db_name' => 'foliage_plant',
+                    'parent' => 'Others'
                 ],
-                [
-                    'display_name' => 'Fruit tree',
-                    'db_name' => 'fruit_tree',
-                    'parent' => 'Trees'
-                ],
+                                
                 [
                     'display_name' => 'Herb',
                     'db_name' => 'herb',
                     'parent' => 'Herbs'
                 ],
                 [
-                    'display_name' => 'Climber',
-                    'db_name' => 'climber',
-                    'parent' => 'Climbers'
+                    'display_name' => 'Herbaceous plant',
+                    'db_name' => 'herbaceous_plant',
+                    'parent' => 'Others'
+                ],
+                [
+                    'display_name' => 'Fern',
+                    'db_name' => 'fern',
+                    'parent' => 'Others'
                 ],
                 
-                [
-                    'display_name' => 'Succulent',
-                    'db_name' => 'succulent',
-                    'parent' => 'Succulents'
-                ],
+                
                 [
                     'display_name' => 'Other',
                     'db_name' => 'other',

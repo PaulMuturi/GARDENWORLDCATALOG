@@ -1,6 +1,10 @@
 @extends('admin.app')
 
 @section('main-content')
+    @php
+
+    $grandtotal = 0;
+    @endphp
     <section class="container">
         <h2 class="text-success">@if(isset($palette))EDIT @else ADD @endif PALETTE</h2>
        
@@ -43,7 +47,7 @@
 
             <div class="d-flex mt-3 bg-success px-3 py-1 rounded">
                 <h1 class="text-light">SECTIONS </h1>
-
+                
                 @php         
                     $palette_id = null;           
                     if (isset($palette)){
@@ -53,17 +57,43 @@
                 <div class="m-auto">
                     <span class="btn btn-success m-auto border" onclick="addSection({{$palette_id}})">Add Section</span>
                 </div>
+                <p class="m-auto text-light"><span class="muted">Grand total: </span> <span id="grandtotal"></span></p>
             </div>
 
             @if (isset($palette))
                 <div class="container mt-4">
                     <div class="row">
-                        @foreach ($palette->sections as $item)
+                        @foreach ($sections as $item)
+                        {{-- get sum of items --}}
+                        @php
+                            $itm_tot = 0;
+                        @endphp
+                            @foreach($item->palette_sections as $itm)
+                                @php
+                                    $qty = $itm->qty;
+                                    if (!$qty){$qty = 0;} 
+                                    $rate = $itm->new_rate;
+                                    if (!$rate){$rate = 0;}
+
+                                    $itm_tot += $rate * $qty;
+                                @endphp
+                            @endforeach
+                            @php
+                                $grandtotal += $itm_tot;
+                            @endphp
                             <div class="col-lg-4 bg-success col-sm-6 border rounded shadow">
                                 <div class="bg-light p-3" style="min-height: 60px">                                
-                                    <div class="d-flex">
-                                        <h5 class="me-auto my-auto text-success">{{$item->title}}</h5>
-                                        <a href="{{route('editSection', $item->id)}}" class="btn btn-warning ms-auto">Edit</a>
+                                    <div class="">
+                                        <div class="col-12 d-flex">
+                                            <h5 class="me-auto my-auto text-success">{{$item->title}} (Ksh {{number_format($itm_tot)}})</h5>
+                                            <a href="{{route('editSection', $item->id)}}" class="btn btn-warning ms-auto">Edit</a>
+                                        </div> 
+                                        {{-- <a href="{{route('editSection', $item->id)}}" class="btn btn-warning ms-auto">Edit</a> --}}
+                            
+                                        <div class="col-12">
+                                            Order: <input type="number" class="border" name="" onblur ="saveOrder(event, {{$item->id}}, {{$palette->id}})" value="{{$item->order}}">
+                                        </div>
+
                                     </div>
                                     <hr>
                                     <p class="text-muted">{{$item->notes}}</p>
@@ -75,6 +105,11 @@
             @endif
         </form> 
     </section>
+
+    <script>
+        var grandtotal = @json($grandtotal);
+        document.getElementById('grandtotal').appendChild(document.createTextNode(grandtotal.toLocaleString()));
+    </script>
     <form action="{{route('deletePalette')}}" method="post" id="delete_palette_form" hidden>
         @csrf
         <input type="text" name="delete_palette_id" id="delete_palette_id">
@@ -89,7 +124,23 @@
         <input type="text" name="add_section_palette_id" id="add_section_palette_id">
     </form>
 
+    <form action="{{route('saveSectionOrder')}}" method="post" id="save_section_order" hidden>
+        {{-- Caters for both add new and edit section --}}
+        @csrf
+    
+        <input type="number" name="order_section_id" id="order_section_id">
+        <input type="number" name="order_palette_id" id="order_palette_id">
+        <input type="number" name="new_order"  id="new_order">
+    </form>
+
     <script>
+        function saveOrder(e, section_id, palette_id){
+            document.getElementById('order_section_id').value = section_id;
+            document.getElementById('order_palette_id').value = palette_id;
+            document.getElementById('new_order').value = e.target.value;
+            document.getElementById('save_section_order').submit();
+        }
+
         function addSection(palette_id){
             var project_id = document.getElementById('project_id').value;
 
@@ -111,7 +162,6 @@
             }
         }
     </script>
-
 <script>
     function editSection(palette_id, section_id){
         var proceed = confirm("Current entries will be saved before being redirected to Add Section Page. Still proceed?");

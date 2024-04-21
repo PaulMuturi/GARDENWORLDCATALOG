@@ -4,6 +4,7 @@ namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Controllers\admin\DataController;
 use App\Models\Project;
 use App\Models\Product;
 use App\Models\Palette;
@@ -13,8 +14,8 @@ use App\Models\LightRequirement;
 use App\Models\FoliageColor;
 use App\Models\FlowerColor;
 use App\Models\GeneralColor;
-
-
+use App\Models\PaletteSection;
+use App\Models\ProductCategory;
 
 class PaletteController extends Controller
 {
@@ -87,16 +88,17 @@ class PaletteController extends Controller
     public function edit($id)
     {
         $palette = Palette::where('id', $id)->with('sections')->first();
+        $sections = Section::where('palette_id', $palette->id)->with('paletteSections')->orderBy('order')->get();
+        // return $palette;
         $projects = Project::orderBy('created_at', 'desc')->get();
         $all_palettes = Palette::all();
-
         
         $projects_with_palette = [];
         foreach($all_palettes as $pal){
             array_push($projects_with_palette, $pal->project_id);
         }
-
-        return view('admin.pages.addPalette', compact('projects', 'palette', 'projects_with_palette'));
+        $sections = json_decode(json_encode($sections));
+        return view('admin.pages.addPalette', compact('projects', 'palette', 'sections', 'projects_with_palette'));
     }
 
     /**
@@ -136,9 +138,9 @@ class PaletteController extends Controller
         if ($request->add_section_section_id){
             //If section already exists fetch its data
             $sectionData = Section::where('id', $request->add_section_section_id)->first();
-            return view('admin.pages.sectionpage', compact('palette', 'project', 'products', 'sectionData'));
+            return view('admin.pages.newsectionpage', compact('palette', 'project', 'products', 'sectionData'));
         }
-        return view('admin.pages.sectionpage', compact('palette', 'project', 'products'));
+        return view('admin.pages.newsectionpage', compact('palette', 'project', 'products'));
     }
 
     public function savePalette($data){
@@ -162,19 +164,46 @@ class PaletteController extends Controller
         }else{
             $section = new Section();
         }
-
-
         $section->palette_id = $request->palette_id;
         $section->title = $request->title;
         $section->notes = $request->notes;
+        $section->save();
 
-        $images = '';
+        //Remove existing section items ones for a new save
+        PaletteSection::where('section_id', $section->id)->delete();
         if (isset($request->choice)){
-            $images = implode(',', $request->choice);
+            foreach ($request->choice as $ch){
+                $ch_arr = explode('_', $ch);
+                $product_id = $ch_arr[0];
+                $img_id = $ch_arr[1];
+                $qty = $ch_arr[2];
+                if (!$qty){$qty = 0;}
+                $rate = $ch_arr[3];
+                if (!$rate){$rate = 0;}
+                $order = $ch_arr[4];
+                if (!$order){$order = 0;}
+                $comment = $ch_arr[5];
+                if (!$comment){$comment = '';}
+
+                $pal_sect = new PaletteSection();
+                $pal_sect->section_id = $section->id;
+                $pal_sect->product_id = $product_id;
+                $pal_sect->img_id = $img_id;
+                $pal_sect->qty = $qty;
+                $pal_sect->new_rate = $rate;
+                $pal_sect->order = $order;
+                $pal_sect->comment = $comment;
+                $cat = $this->categorizeProduct($product_id);
+                $pal_sect->override_category = $cat;
+
+                $pal_sect->save();
+            }
+
+            // return PaletteSection::where('section_id', $section->id)->get();
+            // $choice_data = implode(',', $request->choice);
         }
     
-        $section->image_ids = $images;
-        $section->save();
+        // $section->image_ids = $images;
 
         return redirect(route('editSection', $section->id));
     }
@@ -182,6 +211,10 @@ class PaletteController extends Controller
     public function editSection($id){
 
         $sectionData = Section::where('id', $id)->first();
+        $selection = PaletteSection::where('section_id', $id)->get();
+        // return $selection;
+
+        // return $selection;
 
         $palette;
         $products = Product::with('light_requirement')->with('foliage_color')->with('flower_color')->with('general_color')->with('product_image')->get();
@@ -190,64 +223,92 @@ class PaletteController extends Controller
         if ($sectionData){
             $palette = Palette::where('id', $sectionData->palette_id)->first();
             $project = Project::where('id', $palette->project_id)->first();
-            return view('admin.pages.sectionpage', compact('palette', 'project', 'products', 'sectionData'));
+            return view('admin.pages.newsectionpage', compact('palette', 'project', 'products', 'sectionData', 'selection'));
         }
 
         return redirect(route('palettes'));
     }
 
+    public function saveSectionOrder(Request $request){
+        $section = Section::where('id', $request->order_section_id)->where('palette_id',$request->order_palette_id)->first();
+        $section->order = $request->new_order;
+        $section->save();
+        
+        return redirect(route('editPalette', $request->order_palette_id));
+    }
     //WEB FUNCTIONS FROM HERE
 
     public function showPalette($id){
         $palette = Palette::where('id', $id)->with('sections')->first();
+        $sections = Section::where('palette_id', $id)->orderBy('order')->with('paletteSections')->get();
         $project = Project::where('id', $palette->project_id)->first();
-        $categorized_products = [];
 
-        $all_plants = Product::with('light_requirement')->with('foliage_color')->with('flower_color')->with('general_color')->with('categories')->with('product_image')->get();
-        array_push($categorized_products, ['title' => "",'notes' => '', 'data' => $all_plants]);
-
-        // UNCOMMENT FOR AUTO-CATEGORIZATION
-
-        /*
-        $undercanopy = Product::where('category', '!=', 'tree')
-                        ->where('category', '!=', 'fruit_tree')
-                        ->where('category', '!=', 'herb')
-                        ->where('category', '!=', 'palm')
-                        ->where('category', '!=', 'fruit')
-                        ->with('light_requirement')
-                        ->with('foliage_color')->with('flower_color')->with('general_color')->with('product_image')
-                        ->get();
-                        
-        $trees = Product::where('category', 'tree')->with('light_requirement')->with('foliage_color')->with('flower_color')->with('general_color')->with('product_image')->get();
-     
-        $edibles = Product::where('category','herb')->orWhere('category', 'fruit')->with('light_requirement')->with('foliage_color')->with('flower_color')->with('general_color')->with('product_image')->get();
-        
-        $fruit_trees = Product::where('category','fruit_tree')->with('light_requirement')->with('foliage_color')->with('flower_color')->with('general_color')->with('product_image')->get();
-        
-        $palms = Product::where('category','palm')->with('light_requirement')->with('foliage_color')->with('flower_color')->with('general_color')->with('product_image')->get();
-
-        // return $products;
-        if ($undercanopy){
-            array_push($categorized_products, ['title' => "Under Canopy",  'notes' => 'Groundcovers, Herbaceous plants & Shrubs', 'data' => $undercanopy]);
-        }
-        if ($palms){
-            array_push($categorized_products, ['title' => "Palms",'notes' => 'Palms and Palm-like plants', 'data' => $palms]);
-        }
-        if ($edibles){
-            array_push($categorized_products, ['title' => "Edibles", 'notes' => 'Fruits, vines & herbs', 'data' => $edibles]);
-        }
-        if ($fruit_trees){
-            array_push($categorized_products, ['title' => "Fruit Trees",'notes' => '', 'data' => $fruit_trees]);
-        }
-        if ($trees){
-            array_push($categorized_products, ['title' => "Trees",'notes' => 'Shade / Screening trees', 'data' => $trees]);
-        } 
-        */
-
-        $categorized_products = json_decode(json_encode($categorized_products));
-        // return $categorized_products;
-        return view('web.pages.showPalette', compact('palette', 'project', 'categorized_products'));
+        $all_products = Product::with('light_requirement')->with('foliage_color')->with('flower_color')->with('general_color')->with('categories')->with('product_image')->get();
+        $cat_order = ['Groundcovers', 'Shrubs', 'Succulents', 'Others', 'Palms', 'Fruits', 'Fruit_Trees', 'Trees'];
+       
+        $sections = json_decode(json_encode($sections));
+        return view('web.pages.showPalette', compact('palette', 'sections', 'cat_order', 'project', 'all_products'));
     }
+
+    
+    
+    //Determines the general category of a product
+    public function categorizeProduct($prod_id){
+        $data = new DataController();
+        $inner_data = $data->getProductFootprint();
+        $datacat =$inner_data->category;
+
+        $prod_cat = ProductCategory::where('product_id', $prod_id)->get();
+        $prod_cat_only = [];
+        foreach($prod_cat as $item){
+            array_push($prod_cat_only, $item->category);
+        }
+
+        foreach($datacat as $testcat){
+            if (in_array($testcat->db_name, $prod_cat_only)){
+                return $testcat->parent;
+            }
+            
+        }
+        return "Others";
+    }
+
+    //THIS IS A ONE TIME FUCNTION TO MIGRATE SECTIONS DATA TO THE NWLY CREATED DATA. UMCOMMENT IF NEEDED, ELSE PRESERVE IT
+    public function moveSectionsToNewTable(){
+            // $allPalette = Palette::orderBy('created_at', 'asc')->get();
+            // // return $allPalette;
+            // foreach($allPalette as $palette){
+            //     $allSections = Section::where('palette_id', $palette->id)->get();
+    
+            //     foreach($allSections as $section){
+            //         $imgs_data =  explode(',', $section->image_ids);
+    
+            //         //Get each items product id and image id to save to the new table
+            //         foreach($imgs_data as $data){
+            //             $split_data = explode('_', $data);
+            //             $prod_id = NULL;
+            //             $img_id = NULL;
+            //             if (count($split_data) > 1){
+            //                 $prod_id = $split_data[0];
+            //                 $img_id = $split_data[1];
+            //             }
+    
+            //             if ($prod_id && $img_id){
+            //                 $cat = $this->categorizeProduct($prod_id);
+            //                 $pal_sect = new PaletteSection();
+            //                 $pal_sect->section_id = $section->id;
+            //                 $pal_sect->product_id = $prod_id;
+            //                 $pal_sect->img_id = $img_id;
+            //                 $pal_sect->override_category = $cat;
+            //                 $pal_sect->save();
+            //             }
+            //         }
+            //     }
+            // }
+            // return "Data moving Task complete";
+        }
 }
+
+
 
 
